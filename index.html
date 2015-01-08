@@ -3,7 +3,7 @@
 <html>
  
 <head>
- 
+    <meta http-equiv="content-type" content="text/html" charset="utf-8"/>
     <title>Take or select photo(s) and upload</title>
  
     <script type="text/javascript">
@@ -39,10 +39,7 @@
                 ctx.clearRect(0,0,800,600);
 
                 ctx.drawImage(img,0,0);
-
             }
-
-
         }
 
 
@@ -109,8 +106,39 @@
  
       }
 
-      function combinePic(evt){
+      function combinePic1(evt)
+      {
+          addFairy("1.png");
+      }
+        function combinePic2(evt)
+        {
+            addFairy("2.png");
+        }
+        function combinePic3(evt)
+        {
+            addFairy("3.png");
 
+        }
+        function combinePic4(evt)
+        {
+            addFairy("4.png");
+
+        }
+        function combinePic5(evt)
+        {
+            addFairy("5.png");
+
+        }
+
+      function addFairy(address)
+      {
+          var ctx=document.getElementById("canvasOne").getContext("2d");
+          var img=new Image();
+          img.src=address;
+          img.onload=function(){
+              ctx.drawImage(img,0,0);
+
+          }
       }
  
       function uploadProgress(evt) {
@@ -156,8 +184,6 @@
 </head>
  
 <body>
-
-
  
   <form id="form1" enctype="multipart/form-data" method="post" action="Upload.aspx">
  
@@ -174,12 +200,16 @@
     <div>
  
       <input type="button" onclick="uploadFile()" value="Upload" />
-      <input type="button" onclick="combinePic()" value="Combine" />
+      <input type="button" onclick="combinePic1()" value="花花" />
+        <input type="button" onclick="combinePic2()" value="天使" />
+        <input type="button" onclick="combinePic3()" value="喵喵" />
+        <input type="button" onclick="combinePic4()" value="铁骑士" />
+        <input type="button" onclick="combinePic5()" value="奥可" />
  
     </div>
  
     <div id="progress"></div>
-      <canvas width="800" height="600" id="canvasOne"/>
+      <canvas width="1024" height="768" id="canvasOne"/>
   </form>
  
 </body>
