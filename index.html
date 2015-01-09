@@ -5,7 +5,9 @@
 <head>
     <meta http-equiv="content-type" content="text/html" charset="utf-8"/>
     <title>Take or select photo(s) and upload</title>
- 
+    <form method="post" accept-charset="utf-8" name="form1">
+        <input name="hidden_data" id='hidden_data' type="hidden"/>
+    </form>
     <script type="text/javascript">
 
         window.addEventListener("load",eventWinLoaded,false);
@@ -76,7 +78,7 @@
  
       function uploadFile() {
  
-        var fd = new FormData();
+       /* var fd = new FormData();
  
               var count = document.getElementById('fileToUpload').files.length;
  
@@ -88,8 +90,12 @@
  
                      fd.append('myFile', file);
  
-              }
- 
+              }*/
+
+          var canvas = document.getElementById("canvasOne");
+          var dataURL = canvas.toDataURL("image/png");
+          document.getElementById('hidden_data').value = dataURL;
+          var fd = new FormData(document.forms["form1"]);
         var xhr = new XMLHttpRequest();
  
         xhr.upload.addEventListener("progress", uploadProgress, false);
