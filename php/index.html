@@ -75,10 +75,27 @@
               }
  
       }
+
+       function dataURLtoBlob(dataURL)
+       {
+           var byteString;
+           if(dataURL.split(',')[0].indexOf('base64')>=0)
+                byteString=atob(dataURL.split(',')[1]);
+           else
+                byteString=unescape(dataURL.split(',')[1]);
+
+           var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
+
+           var ia=new Uint8Array(byteString.length);
+           for(var i=0;i<byteString.length;i++){
+               ia[i]=byteString.charCodeAt(i);
+           }
+           return new Blob([ia],{type:mimeString});
+       }
  
       function uploadFile() {
  
-        var fd = new FormData();
+       /* var fd = new FormData();
  
               var count = document.getElementById('fileToUpload').files.length;
  
@@ -90,9 +107,21 @@
  
                      fd.append('myFile', file);
  
-              }
+              }*/
 
-          
+          /*var canvas = document.getElementById("canvasOne");
+          var dataURL = canvas.toDataURL("image/png").replace("image/png","image/octet-stream");
+          //window.location.href=dataURL;
+          Canvas2Image.saveAsPNG(canvas);
+          document.getElementById('hidden_data').value = dataURL;
+          var fd = new FormData(document.forms["form1"]);*/
+
+          var canvas = document.getElementById("canvasOne");
+          var dataURL=canvas.toDataURL("image/png");
+          var bolb=dataURLtoBlob(dataURL);
+          var fd=new FormData(document.forms[0]);
+          fd.append("myFile",bolb)
+
         var xhr = new XMLHttpRequest();
  
         xhr.upload.addEventListener("progress", uploadProgress, false);
@@ -135,12 +164,19 @@
 
       function addFairy(address)
       {
+          var canvas=document.getElementById("canvasOne");
           var ctx=document.getElementById("canvasOne").getContext("2d");
+          var myImg=document.getElementById('canvasImg');
           var img=new Image();
           img.src=address;
           img.onload=function(){
               ctx.drawImage(img,0,0);
 
+              var dataURL=canvas.toDataURL("image/png");
+              var base64=dataURL.replace(/^.*?,/,'');
+              var binary=atob(base64);
+              myImg.src=dataURL;
+              alert("my image created");
           }
       }
  
@@ -213,6 +249,7 @@
  
     <div id="progress"></div>
       <canvas width="1024" height="768" id="canvasOne"/>
+      <img id="canvasImg"/>
   </form>
  
 </body>
