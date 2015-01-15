@@ -118,9 +118,10 @@
 
           var canvas = document.getElementById("canvasOne");
           var dataURL=canvas.toDataURL("image/png");
-          var bolb=dataURLtoBlob(dataURL);
-          var fd=new FormData(document.forms[0]);
-          fd.append("myFile",bolb)
+          var blob=dataURLtoBlob(dataURL);
+         // var file=new File(blob,"ss.png");
+          var fd=new FormData(document.forms[1]);
+          fd.append("myFile",blob)
 
         var xhr = new XMLHttpRequest();
  
