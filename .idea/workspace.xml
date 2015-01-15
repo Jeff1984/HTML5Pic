@@ -26,18 +26,9 @@
       <file leaf-file-name="quarkTest.html" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/quarkTest.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-6.894737" vertical-offset="1716" max-vertical-offset="4047">
+            <state vertical-scroll-proportion="0.0" vertical-offset="2147" max-vertical-offset="4085">
               <caret line="113" column="17" selection-start-line="113" selection-start-column="17" selection-end-line="113" selection-end-column="17" />
-              <folding>
-                <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#2;n#head#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#3;n#head#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#4;n#head#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#5;n#head#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="e#2502#2533#0" expanded="false" />
-                <element signature="n#style#0;n#input#0;n#div#0;n#div#0;n#form#0;n#body#1;n#html#0;n#!!top" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -45,7 +36,7 @@
       <file leaf-file-name="quark.base-1.0.0.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/js/quark.base-1.0.0.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="17053" max-vertical-offset="79610">
+            <state vertical-scroll-proportion="0.0" vertical-offset="17328" max-vertical-offset="79686">
               <caret line="912" column="0" selection-start-line="912" selection-start-column="0" selection-end-line="913" selection-end-column="0" />
               <folding />
             </state>
@@ -55,8 +46,8 @@
       <file leaf-file-name="editableImage.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/js/editableImage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8041237" vertical-offset="197" max-vertical-offset="2318">
-              <caret line="37" column="15" selection-start-line="37" selection-start-column="9" selection-end-line="37" selection-end-column="15" />
+            <state vertical-scroll-proportion="0.497545" vertical-offset="1710" max-vertical-offset="2337">
+              <caret line="108" column="8" selection-start-line="108" selection-start-column="8" selection-end-line="108" selection-end-column="8" />
               <folding>
                 <element signature="e#0#44#0" expanded="false" />
               </folding>
@@ -183,6 +174,14 @@
       <ConfigurationWrapper RunnerId="JavascriptDebugRunner" />
       <method />
     </configuration>
+    <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
+      <option name="VMOptions" />
+      <option name="arguments" />
+      <option name="filePath" />
+      <option name="scope" value="ALL" />
+      <option name="testName" />
+      <method />
+    </configuration>
     <configuration default="true" type="DartCommandLineRunConfigurationType" factoryName="Dart Command Line Application">
       <option name="VMOptions" />
       <option name="arguments" />
@@ -193,12 +192,14 @@
       <option name="showConsoleOnStdOut" value="false" />
       <method />
     </configuration>
-    <configuration default="true" type="DartUnitRunConfigurationType" factoryName="DartUnit">
-      <option name="VMOptions" />
-      <option name="arguments" />
+    <configuration default="true" type="CucumberJavaScriptRunConfigurationType" factoryName="Cucumber.js">
+      <option name="cucumberJsArguments" />
+      <option name="executablePath" />
       <option name="filePath" />
-      <option name="scope" value="ALL" />
-      <option name="testName" />
+      <method />
+    </configuration>
+    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" config-file="">
+      <envs />
       <method />
     </configuration>
     <configuration default="true" type="JSTestDriver:ConfigurationType" factoryName="JsTestDriver">
@@ -206,16 +207,6 @@
       <setting name="settingsFile" value="" />
       <setting name="serverType" value="INTERNAL" />
       <setting name="preferredDebugBrowser" value="Chrome" />
-      <method />
-    </configuration>
-    <configuration default="true" type="JavaScriptTestRunnerKarma" factoryName="Karma" config-file="">
-      <envs />
-      <method />
-    </configuration>
-    <configuration default="true" type="CucumberJavaScriptRunConfigurationType" factoryName="Cucumber.js">
-      <option name="cucumberJsArguments" />
-      <option name="executablePath" />
-      <option name="filePath" />
       <method />
     </configuration>
     <configuration default="true" type="JavascriptDebugType" factoryName="JavaScript Debug">
@@ -286,10 +277,36 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="57" />
+      <option name="time" value="60" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/quarkTest.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4085">
+          <caret line="113" column="17" selection-start-line="113" selection-start-column="17" selection-end-line="113" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/quark.base-1.0.0.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="17328" max-vertical-offset="79686">
+          <caret line="912" column="0" selection-start-line="912" selection-start-column="0" selection-end-line="913" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/js/editableImage.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="197" max-vertical-offset="2318">
+          <caret line="37" column="15" selection-start-line="37" selection-start-column="9" selection-end-line="37" selection-end-column="15" />
+          <folding>
+            <element signature="e#0#44#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="898" max-vertical-offset="4997">
@@ -313,7 +330,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="171">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -345,7 +361,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="171">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -377,7 +392,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="171">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -390,7 +404,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="23370" max-vertical-offset="41553">
           <caret line="1230" column="35" selection-start-line="1230" selection-start-column="35" selection-end-line="1230" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -422,7 +435,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="41553">
           <caret line="1230" column="35" selection-start-line="1230" selection-start-column="35" selection-end-line="1230" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -499,7 +511,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3327616" vertical-offset="38604" max-vertical-offset="41553">
           <caret line="2042" column="25" selection-start-line="2042" selection-start-column="19" selection-end-line="2042" selection-end-column="25" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -507,7 +518,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="599">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -555,18 +565,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/quarkTest.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-6.894737" vertical-offset="1716" max-vertical-offset="4047">
+        <state vertical-scroll-proportion="0.0" vertical-offset="2147" max-vertical-offset="4085">
           <caret line="113" column="17" selection-start-line="113" selection-start-column="17" selection-end-line="113" selection-end-column="17" />
-          <folding>
-            <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#2;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#3;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#4;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#5;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="e#2502#2533#0" expanded="false" />
-            <element signature="n#style#0;n#input#0;n#div#0;n#div#0;n#form#0;n#body#1;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -580,8 +581,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/js/editableImage.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8041237" vertical-offset="197" max-vertical-offset="2318">
-          <caret line="37" column="15" selection-start-line="37" selection-start-column="9" selection-end-line="37" selection-end-column="15" />
+        <state vertical-scroll-proportion="0.497545" vertical-offset="1710" max-vertical-offset="2337">
+          <caret line="108" column="8" selection-start-line="108" selection-start-column="8" selection-end-line="108" selection-end-column="8" />
           <folding>
             <element signature="e#0#44#0" expanded="false" />
           </folding>

@@ -14,7 +14,7 @@ var editableImage = function(name,props)
 {
     this.srcName=name;
 
-    self=this;
+    //self=this;
     editableImage.superClass.constructor.call(this, props);
     this.init();
 };
@@ -24,7 +24,7 @@ editableImage.prototype.init=function()
 {
     this._image=new Q.Bitmap({id:"head", image:Q.getDOM(this.srcName), x:0, y:0});
     this.dragging=false;
-    //this.eventChildren=false;
+    this.eventChildren=false;
 
     gS = new Q.Graphics({width:40, height:40});
     gS.beginFill("#0ff").drawRect(0.5, 0.5, 40, 40).endFill().cache();
@@ -32,11 +32,11 @@ editableImage.prototype.init=function()
     gR = new Q.Graphics({width:40, height:40,x:this._image.width,y:this._image.height});
     gR.beginFill("#f00").drawRect(0.5, 0.5, 40, 40).endFill().cache();
 
-    this.addChild(this._image);
-    gS.addEventListener(events[0],this.scaleImage);
-    gR.addEventListener(events[0],this.rotationImage);
-    this._image.addEventListener(events[0], this.startDrag,false);
-    this._image.addEventListener(events[2], this.stopDrag,false);
+    this.addChild(this._image,gS,gR);
+    //gS.addEventListener(events[0],this.scaleImage);
+    //gR.addEventListener(events[0],this.rotationImage);
+    this.addEventListener(events[0], this.startDrag);
+    this.addEventListener(events[2], this.stopDrag);
     gS.visible=gR.visible=false;
     this._state=STATE.none;
 };
@@ -91,21 +91,22 @@ editableImage.prototype.rotationImage = function(e){
 
 editableImage.prototype.startDrag = function(e)
 {
-    if(!self.dragging)
+    //self=this;
+    if(!this.dragging)
     {
-        self.dragging = true;
-        self.offsetX=mousePos.x-self.x;
-        self.offsetY=mousePos.y-self.y;
+        this.dragging = true;
+        this.offsetX=mousePos.x-this.x;
+        this.offsetY=mousePos.y-this.y;
     }
-    //var selectFariyEvent =new CustomEvent("SELECT_A_FARIY",{'detail':self});
-    //self.dispatchEvent(selectFariyEvent,self);
+    var selectFariyEvent =new CustomEvent("SELECT_A_FARIY",{'detail':this});
+    this.dispatchEvent(selectFariyEvent,this);
 
     //self.setState(STATE.editing);
 };
 
 editableImage.prototype.stopDrag = function(e)
 {
-     self.dragging = false;
+    this.dragging = false;
     // console.log("THIS IS:",self.x+(self.offsetX),self.y+(self.offsetY))
 };
 
