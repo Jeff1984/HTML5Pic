@@ -10,6 +10,7 @@
     <img id="MM" src="3.png" style="display: none"/>
     <img id="TQS" src="4.png" style="display: none"/>
     <img id="AK" src="5.png" style="display: none"/>
+    <img id="icon" src="icon_02.png" style="display: none"/>
     <title>Take or select photo(s) and upload</title>
     <form method="post" accept-charset="utf-8" name="form1">
         <input name="hidden_data" id='hidden_data' type="hidden"/>
@@ -23,8 +24,12 @@
 		var domContext = new Quark.DOMContext({canvas:container});
         var mousePos;
         var events;
+        var selectedImage;
         const MAX_HEIGHT=800;
         const MAX_WIDTH=600;
+        //var selectFariyEvent =new CustomEvent("SELECT_A_FARIY");
+
+        var editArr=[];
 
 		//or create a CanvasContext
 		//var container = Quark.getDOM("container");
@@ -37,9 +42,6 @@
 		container.appendChild(canvas);
 		var canvasContext = new Quark.CanvasContext({canvas:canvas});
 
-        //var canvas = document.getElementById('canvas');
-
-
 		var stage = new Quark.Stage({width:600, height:800, context:domContext, update:function()
 		{
 		//write your own update code here
@@ -48,7 +50,7 @@
         container.addEventListener('mousemove', function(evt) {
             mousePos = getMousePos(container, evt);
             var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-            console.log( message);
+            //console.log( message);
         });
 
         function getMousePos(canvas, evt) {
@@ -67,10 +69,65 @@
         events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
         em.registerStage(stage, events);
 
-        var im=new editableImage("HH",{id:"edit",x:0,y:0,autoSize:true});
-        stage.addChild(im);
+        //em.registerStage(stage,)
 
-        //files related
+
+        /*
+        * fairy
+        * */
+        function combinePic1(evt)
+        {
+            addFairy("HH");
+        }
+        function combinePic2(evt)
+        {
+            addFairy("TS");
+        }
+        function combinePic3(evt)
+        {
+            addFairy("MM");
+        }
+        function combinePic4(evt)
+        {
+            addFairy("TQS");
+        }
+        function combinePic5(evt)
+        {
+            addFairy("AK");
+        }
+        function addFairy(name)
+        {
+            var im=new editableImage(name,{id:"edit",x:0,y:0,autoSize:true});
+            im.name=name;
+            //var event =new Event("TEST_EVENT");
+           // im.addEventListener(events[0], im.startDrag);
+            //im.addEventListener(events[2], im.stopDrag);
+            im.addEventListener("SELECT_A_FARIY",function (e)
+            {
+                console.log("LOG::", e.detail.name);
+                for(im of editArr)
+                {
+                    if(im.name!=e.detail.name)
+                    {
+                        im.setState(STATE.none);
+                    }
+                }
+            },false);
+            //im.dispatchEvent(selectFariyEvent);
+            stage.addChild(im);
+            editArr.push(im);
+        }
+
+        function setSelectImage(value)
+        {
+            if(selectedImage!=value)
+            {
+                selectedImage=value;
+            }
+        }
+
+
+         //files related
         function fileSelected() {
 
             var count = document.getElementById('fileToUpload').files.length;
