@@ -100,7 +100,6 @@ editableImage.prototype.startDrag = function(e)
     }
     var selectFariyEvent =new CustomEvent("SELECT_A_FARIY",{'detail':this});
     this.dispatchEvent(selectFariyEvent,this);
-
     //self.setState(STATE.editing);
 };
 

@@ -1,0 +1,1 @@
+pscp.exe -P 22 quark.base-1.0.0.js zhangchi@10.0.58.53:/var/www/ssh_test/php

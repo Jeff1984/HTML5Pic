@@ -3,213 +3,176 @@
 <html>
  
 <head>
+    <div id="container" style="margin-top: 0px"/>
     <meta http-equiv="content-type" content="text/html" charset="utf-8"/>
+    <img id="HH" src="1.png" style="display: none"/>
+    <img id="TS" src="2.png" style="display: none"/>
+    <img id="MM" src="3.png" style="display: none"/>
+    <img id="TQS" src="4.png" style="display: none"/>
+    <img id="AK" src="5.png" style="display: none"/>
     <title>Take or select photo(s) and upload</title>
     <form method="post" accept-charset="utf-8" name="form1">
         <input name="hidden_data" id='hidden_data' type="hidden"/>
     </form>
     <body onmousedown="return false;">
-    <script src="kinetic.js"></script>
+	<script src="quark.base-1.0.0.js"></script>
+    <script src="editableImage.js"></script>
     <script type="text/javascript">
+		//create a DOMContext
+		var container; //= Quark.getDOM("container");
 
-        var interval;
-        var editTarget;
-
-        var layer;
-        var darthVaderGroup
-        var images = {};
+		var domContext; //= new Quark.DOMContext({canvas:container});
+        var mousePos;
+        var events;
+        var selectedTarget;
         const MAX_HEIGHT=800;
         const MAX_WIDTH=600;
-        var layerNum;
-        var sources = {
-            HH: '1.png',
-            TS: '2.png',
-            MM:'3.png',
-            TQS:'4.png',
-            AK:'5.png'
-        };
-        loadImages(sources, initStage);
-        var canvasList={};
+        //var selectFariyEvent =new CustomEvent("SELECT_A_FARIY");
+        var stage;
+        var canvas
+        var editArr=[];
         window.addEventListener("load",eventWinLoaded,false);
 
-        function initStage(images) {
-            /*var stage = new Kinetic.Stage({
-                container: document.getElementById("canvasOne"),
-                width: 578,
-                height: 400
-            });
-            darthVaderGroup = new Kinetic.Group({
-                x: 270,
-                y: 100,
-                draggable: true
-            });
-            layer = new Kinetic.Layer();
-
-
-            layer.add(darthVaderGroup);
-            stage.add(layer);
-            var darthVaderImg = new Kinetic.Image({
-                x: 0,
-                y: 0,
-                image: images.darthVader,
-                width: 200,
-                height: 138,
-                name: 'image'
-            });
-
-            darthVaderGroup.add(darthVaderImg);
-            stage.draw();*/
-        }
-        function loadImages(sources, callback) {
-
-            var loadedImages = 0;
-            var numImages = 0;
-            for(var src in sources) {
-                numImages++;
-            }
-            for(var src in sources) {
-                images[src] = new Image();
-                images[src].onload = function() {
-                    if(++loadedImages >= numImages) {
-                        callback(images);
-                    }
-                };
-                images[src].src = sources[src];
-            }
-        }
+		//or create a CanvasContext
         function eventWinLoaded(){
 
-            loadImages(sources, initStage);
+            //canvas.id="picture";
+            container = Quark.getDOM("container");
+            domContext = new Quark.DOMContext({canvas:container});
+
+            //
+            //var container = Quark.getDOM("container");
+            canvas = Quark.createDOM("canvas", {width:600, height:800, style:
+            {
+                position:"absolute",
+                backgroundColor:"#000"
+            }});
+            container.appendChild(canvas);
+            var canvasContext = new Quark.CanvasContext({canvas:canvas});
+            stage = new Quark.Stage({width:600, height:800, context:domContext, update:function()
+            {
+                //write your own update code here
+            }});
+
+
+            container.addEventListener('mousemove', function(evt) {
+                mousePos = getMousePos(container, evt);
+                var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+                //console.log( message);
+            });
+
+            var fps = 60;
+            var timer = new Q.Timer(1000/fps);
+            timer.addListener(stage);
+            timer.start();
+
+            var em = new Quark.EventManager();
+            events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
+            em.registerStage(stage, events);
+
         }
 
 
-        //photo
-        function loadFileToCanvas(file){
-            var canvas=document.getElementById("canvasOne");
-            var ctx=document.getElementById("canvasOne").getContext("2d");
-            var img=new Image();
-            img.src=window.URL.createObjectURL(file);
-            img.onload=function(){
-                ctx.clearRect(0,0,800,600);
-                if(img.height>MAX_HEIGHT)
-                {
-                    img.height=MAX_HEIGHT;
-                }
-                if(img.width>MAX_WIDTH)
-                {
-                    img.width=MAX_WIDTH;
-                }
-                canvas.width=MAX_WIDTH;
-                canvas.height=MAX_HEIGHT;
 
-                ctx.drawImage(img,0,0,img.width,img.height);
-                layerNum++;
-            }
+        function getMousePos(canvas, evt) {
+            var rect = canvas.getBoundingClientRect();
+            return {
+                x: evt.clientX - rect.left,
+                y: evt.clientY - rect.top
+            };
         }
 
-      function fileSelected() {
+        //em.registerStage(stage,)
 
-        var count = document.getElementById('fileToUpload').files.length;
- 
-              document.getElementById('details').innerHTML = "";
- 
-              for (var index = 0; index < count; index ++)
- 
-              {
-                     var file = document.getElementById('fileToUpload').files[index];
-                     loadFileToNewCanvas(file);
-                     var fileSize = 0;
- 
-                     if (file.size > 1024 * 1024)
- 
-                            fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
- 
-                     else
- 
-                            fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
- 
-                     document.getElementById('details').innerHTML += 'Name: ' + file.name + '<br>Size: ' + fileSize + '<br>Type: ' + file.type;
- 
-                     document.getElementById('details').innerHTML += '<p>';
- 
-              }
- 
-      }
 
-       function dataURLtoBlob(dataURL)
-       {
-           var byteString;
-           if(dataURL.split(',')[0].indexOf('base64')>=0)
-                byteString=atob(dataURL.split(',')[1]);
-           else
-                byteString=unescape(dataURL.split(',')[1]);
-
-           var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
-
-           var ia=new Uint8Array(byteString.length);
-           for(var i=0;i<byteString.length;i++){
-               ia[i]=byteString.charCodeAt(i);
-           }
-           return new Blob([ia],{type:mimeString});
-       }
- 
-      function uploadFile() {
-
-          //TODO readd canvasOne to canvasEditor and redraw canvasEditor
-
-          var canvas = document.getElementById("canvasOne");
-          var dataURL=canvas.toDataURL("image/png");
-          var blob=dataURLtoBlob(dataURL);
-          var fd=new FormData(document.forms[1]);
-          fd.append("myFile",blob);
-
-            var xhr = new XMLHttpRequest();
-
-            xhr.upload.addEventListener("progress", uploadProgress, false);
-
-            xhr.addEventListener("load", uploadComplete, false);
-
-            xhr.addEventListener("error", uploadFailed, false);
-
-            xhr.addEventListener("abort", uploadCanceled, false);
-
-            xhr.open("POST", "savetofile.php");
-
-            xhr.send(fd);
-
-      }
-
-      function combinePic1(evt)
-      {
-          addFairy(images.HH);
-      }
+        /*
+        * fairy
+        * */
+       function combinePic1(evt)
+        {
+            addFairy("HH");
+        }
         function combinePic2(evt)
         {
-            addFairy(images.TS);
+            addFairy("TS");
         }
         function combinePic3(evt)
         {
-            addFairy(images.MM);
+            addFairy("MM");
         }
         function combinePic4(evt)
         {
-            addFairy(images.TQS);
+            addFairy("TQS");
         }
         function combinePic5(evt)
         {
-            addFairy(images.AK);
+            addFairy("AK");
+        }
+        function addFairy(name)
+        {
+            var im=new editableImage(name,{id:"edit",x:0,y:0,autoSize:true});
+            im.name=name;
+
+            im.addEventListener("SELECT_A_FARIY",function (e)
+            {
+                console.log("LOG::", e.detail.name);
+                selectedTarget=e.detail;
+                console.log("CHOOSED:",selectedTarget.name);
+                //selectedTarget.
+                for(im of editArr)
+                {
+                    if(im.name!=e.detail.name)
+                    {
+                        im.setState(STATE.none);
+                    }
+                }
+            },false);
+            //im.dispatchEvent(selectFariyEvent);
+            stage.addChild(im);
+            editArr.push(im);
+        }
+
+        function setSelectImage(value)
+        {
+            if(selectedImage!=value)
+            {
+                selectedImage=value;
+            }
+        }
+
+
+         //files related
+        function fileSelected() {
+
+            var count = document.getElementById('fileToUpload').files.length;
+
+            document.getElementById('details').innerHTML = "";
+
+            for (var index = 0; index < count; index ++)
+
+            {
+                var file = document.getElementById('fileToUpload').files[index];
+                this.loadFileToNewCanvas(file);
+                var fileSize = 0;
+
+                if (file.size > 1024 * 1024)
+
+                    fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
+
+                else
+
+                    fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
+
+                document.getElementById('details').innerHTML += 'Name: ' + file.name + '<br>Size: ' + fileSize + '<br>Type: ' + file.type;
+
+                document.getElementById('details').innerHTML += '<p>';
+
+            }
         }
 
         function loadFileToNewCanvas(file)
         {
-            var canvas=document.createElement('canvas');
-            document.getElementById("imgContainer").appendChild(canvas);
             var ctx=canvas.getContext("2d");
-            canvas.id="picture";
-            canvas.width=800;
-            canvas.height=600;
-            canvas.style.zIndex=0;
-            canvas.style.position="absolute";
             var img=new Image();
             img.src=window.URL.createObjectURL(file);
             img.onload=function(){
@@ -227,89 +190,6 @@
                 ctx.drawImage(img,0,0,img.width,img.height);
             }
         }
-
-      function addFairy(address)
-      {
-          var canvas=document.createElement('canvas');
-          canvas.id=address.toString();
-          canvas.name=address.toString();
-          canvas.width=800;
-          canvas.height=600;
-          canvas.style.zIndex=++layerNum;
-          canvas.style.position="absolute";
-          canvasList[canvas.id]=canvas;
-
-          document.getElementById("imgContainer").appendChild(canvas);
-          var ctx=canvas.getContext("2d");
-          ctx.drawImage(address,0,0);
-          canvas.onmousedown=onD;
-          //editTarget=canvas;
-          //canvas.onmousemove=onM;
-          console.log(canvas);
-      }
-
-      function onD(evt){
-          console.log(evt.currentTarget.name,evt.pageX+=10);
-          editTarget= evt.currentTarget
-          editTarget.onmousemove=onM;
-      }
-
-      function onM(evt){
-          console.log(evt.target,"MOVE");
-      }
- 
-      function uploadProgress(evt) {
- 
-        if (evt.lengthComputable) {
- 
-          var percentComplete = Math.round(evt.loaded * 100 / evt.total);
- 
-          document.getElementById('progress').innerHTML = percentComplete.toString() + '%';
- 
-        }
- 
-        else {
- 
-          document.getElementById('progress').innerHTML = 'unable to compute';
- 
-        }
- 
-      }
- 
-      function uploadComplete(evt) {
- 
-        /* This event is raised when the server send back a response */
- 
-        alert(evt.target.responseText);
- 
-      }
- 
-      function uploadFailed(evt) {
- 
-        alert("There was an error attempting to upload the file.");
- 
-      }
- 
-      function uploadCanceled(evt) {
- 
-        alert("The upload has been canceled by the user or the browser dropped the connection.");
- 
-      }
-      function createCanvas(){
-
-      }
-
-      function copyCanvas(evt){
-          /*var sourceCanvas=document.getElementById("1.png");
-          var destCtx=document.getElementById("canvasOne").getContext("2d");
-          destCtx.drawImage(sourceCanvas,0,0);*/
-      }
-
-      function rotate(evt){
-          var ctx=document.getElementById("canvasOne").getContext("2d");
-          ctx.translate(50,35);
-          ctx.restore();
-      }
  
     </script>
  
@@ -317,14 +197,14 @@
  
 <body>
  
-  <form id="form1" enctype="multipart/form-data" method="post" action="Upload.aspx">
+  <form id="form1" enctype="multipart/form-data">
  
     <div>
-        <label for="fileToUpload">Take or select photo(s)</label><br />
-        <div id="buttonContainer" style="margin-top: 1px; text-align: center;">
+        <label for="fileToUpload">Take or select photo(s)1.0.4</label>
+        <div id="buttonContainer" style="margin-top: 1px; text-align: center;" >
 
-            <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera" />
-            <<input type="button" onclick="uploadFile()" value="Upload" />
+            <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"  style="margin-top: 0px"/>
+            <input type="button" onclick="uploadFile()" value="Upload" />
             <input type="button" onclick="combinePic1()" value="花花" />
             <input type="button" onclick="combinePic2()" value="天使" />
             <input type="button" onclick="combinePic3()" value="喵喵" />
@@ -336,13 +216,7 @@
     </div>
  
     <div id="details"></div>
- 
     <div id="progress"></div>
-      <div id="imgContainer" style="margin-top: 0px; text-align: center;position:absolute">
-
-      </div>
-      <canvas id="canvasOne" width="0" height="0"></canvas>
-      <img id="canvasImg"/>
   </form>
  
 </body>
