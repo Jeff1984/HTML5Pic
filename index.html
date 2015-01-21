@@ -49,7 +49,7 @@
             }});
             container.appendChild(canvas);
             var canvasContext = new Quark.CanvasContext({canvas:canvas});
-            stage = new Quark.Stage({width:600, height:800, context:domContext, update:function()
+            stage = new Quark.Stage({width:600, height:800/*,y:48,x:8*/,context:domContext, update:function()
             {
                 //write your own update code here
             }});
@@ -146,14 +146,14 @@
 
             var count = document.getElementById('fileToUpload').files.length;
 
-            document.getElementById('details').innerHTML = "";
+           // document.getElementById('details').innerHTML = "";
 
             for (var index = 0; index < count; index ++)
 
             {
                 var file = document.getElementById('fileToUpload').files[index];
                 this.loadFileToNewCanvas(file);
-                var fileSize = 0;
+                /*var fileSize = 0;
 
                 if (file.size > 1024 * 1024)
 
@@ -165,7 +165,7 @@
 
                 document.getElementById('details').innerHTML += 'Name: ' + file.name + '<br>Size: ' + fileSize + '<br>Type: ' + file.type;
 
-                document.getElementById('details').innerHTML += '<p>';
+                document.getElementById('details').innerHTML += '<p>';*/
 
             }
         }
@@ -197,7 +197,7 @@
  
 <body>
  
-  <form id="form1" enctype="multipart/form-data">
+  <!--<form id="form1" enctype="multipart/form-data">-->
  
     <div>
         <label for="fileToUpload">Take or select photo(s)1.0.4</label>
@@ -217,7 +217,7 @@
  
     <div id="details"></div>
     <div id="progress"></div>
-  </form>
+ <!-- </form>-->
  
 </body>
  
