@@ -25,12 +25,15 @@
         var mousePos;
         var events;
         var selectedTarget;
+
         const MAX_HEIGHT=800;
         const MAX_WIDTH=600;
         //var selectFariyEvent =new CustomEvent("SELECT_A_FARIY");
         var stage;
         var canvas
         var editArr=[];
+
+        var AnchorRota,AnchorScale;
         window.addEventListener("load",eventWinLoaded,false);
 
 		//or create a CanvasContext
@@ -49,7 +52,7 @@
             }});
             container.appendChild(canvas);
             var canvasContext = new Quark.CanvasContext({canvas:canvas});
-            stage = new Quark.Stage({width:600, height:800/*,y:48,x:8*/,context:domContext, update:function()
+            stage = new Quark.Stage({width:600, height:800,y:48,x:8,context:domContext, update:function()
             {
                 //write your own update code here
             }});
@@ -57,6 +60,7 @@
 
             container.addEventListener('mousemove', function(evt) {
                 mousePos = getMousePos(container, evt);
+                repoAnchorToImage();
                 var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
                 //console.log( message);
             });
@@ -70,9 +74,75 @@
             events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
             em.registerStage(stage, events);
 
+            //ADd
+            for(var i=0;i<5;i++)
+            {
+                var im=new editableImage(getFairy(i),{id:"edit",x:0,y:0,autoSize:true});
+                im.name=getFairy(i);
+                stage.addChild(im);
+                console.log("index is:",stage.getChildIndex(im));
+                editArr.push(im);
+                //im.scaleX=100/im.width;
+                //im.scaleY=100/im.height;
+                im.setWidth(100);
+                im.setHeight(100);
+
+                im.addEventListener("SELECT_A_FARIY",function (e)
+                {
+                    console.log("LOG::", e.detail.name);
+                    selectedTarget=e.detail;
+                    repoAnchorToImage();
+                    console.log("CHOOSED:",selectedTarget.name);
+                    //selectedTarget.
+                    for(im of editArr)
+                    {
+                        if(im.name!=e.detail.name)
+                        {
+                            im.setState(STATE.none);
+                        }
+                    }
+                },false);
+            }
+
+            AnchorRota= new Q.Graphics({width:40, height:40,regX:20,regY:20});
+            AnchorRota.beginFill("#f00").drawRect(0.5, 0.5, 40, 40).endFill().cache();
+
+            AnchorScale = new Q.Graphics({width:40, height:40,regX:20,regY:20});
+            AnchorScale.beginFill("#00f").drawRect(0.5, 0.5, 40, 40).endFill().cache();
+
+            stage.addChild(AnchorRota,AnchorScale);
         }
 
+        function repoAnchorToImage() {
+            if (selectedTarget != null) {
 
+                AnchorRota.x = selectedTarget.x;
+                AnchorRota.y = selectedTarget.y;//+selectedTarget.width
+                AnchorScale.x = selectedTarget.x + selectedTarget.getWidth();
+                AnchorScale.y = selectedTarget.y + selectedTarget.getHeight();
+            }
+        }
+
+        function getFairy(num){
+            switch(num)
+            {
+                case 0:
+                    return "HH";
+                    break;
+                case 1:
+                    return "TS";
+                    break;
+                case 2:
+                    return "MM";
+                    break;
+                case 3:
+                    return "TQS";
+                    break;
+                case 4:
+                    return "AK";
+                    break;
+            }
+        }
 
         function getMousePos(canvas, evt) {
             var rect = canvas.getBoundingClientRect();
@@ -83,7 +153,6 @@
         }
 
         //em.registerStage(stage,)
-
 
         /*
         * fairy

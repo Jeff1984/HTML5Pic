@@ -16,8 +16,10 @@ var editableImage = function(name,props)
     this._scaleX=1;
     this._scaleY=1;
 
-    this._rotation=0;
+    this._width=0;
+    this._height=0;
 
+    this._rotation=0;
     //self=this;
     editableImage.superClass.constructor.call(this, props);
     this.init();
@@ -38,7 +40,7 @@ editableImage.prototype.init=function()
 
     this.testRect=new Q.Graphics({width:this._image.width, height:this._image.height,regX:this._image.width>>1,regY:this._image.height>>1,x:this._image.width>>1,y:this._image.height>>1});
     this.testRect.beginFill("#510").drawRect(5, 5, this._image.width, this._image.height).endFill().cache();
-    this.addChild(this.testRect,this._image,this.gS,this.gR);
+    this.addChild(this.testRect,this._image);
     //gS.addEventListener(events[0],this.scaleImage);
     //gR.addEventListener(events[0],this.rotationImage);
     this.addEventListener(events[0], this.startDrag);
@@ -49,7 +51,7 @@ editableImage.prototype.init=function()
     //this.regX=this._image.width>>1;
     //this.regY=this._image.height>>1;
 
-    this.gS.x=
+    /*this.gS.x=
     this.gS.regX=this.gS.width>>1;
     this.gS.y=
     this.gS.regY=this.gS.height>>1;
@@ -57,15 +59,18 @@ editableImage.prototype.init=function()
     this.gR.x=this._image.width-(this.gR.width>>1);
     this.gR.regX=this.gR.width>>1;
     this.gR.y=this._image.height-(this.gR.height>>1);
-    this.gR.regY=this.gR.height>>1
+    this.gR.regY=this.gR.height>>1*/
 
     this._image.x=
     this._image.regX=this._image.width>>1;
     this._image.y=
     this._image.regY=this._image.height>>1;
+
+    //this._width=this._image.width;
+    //this._height=this._image.height;
     //this.
-    this.scaleStartX;
-    this.scaleStartY;
+    //this.scaleStartX;
+    //this.scaleStartY;
 };
 
 editableImage.prototype.setEditable=function(value)
@@ -74,8 +79,35 @@ editableImage.prototype.setEditable=function(value)
     {
         this._editable=value;
     }
-    this.gS.visible=this.gR.visible=value;
+   // this.gS.visible=this.gR.visible=value;
+};
 
+editableImage.prototype.setWidth=function(value)
+{
+    this._scaleX=value/this._image.width;
+    this.scaleX=this._scaleX
+}
+
+editableImage.prototype.getWidth=function(value)
+{
+    return this._image.width*this._scaleX;
+}
+
+editableImage.prototype.setHeight=function(value)
+{
+    this._scaleY=value/this._image.height;
+    this.scaleY=this._scaleY;
+}
+
+editableImage.prototype.getHeight=function(value)
+{
+    return this._image.height*this._scaleY;
+}
+
+
+editableImage.prototype.getState=function()
+{
+    return this._state;
 }
 
 editableImage.prototype.setState = function(value)
@@ -97,7 +129,6 @@ editableImage.prototype.setState = function(value)
             this.setEditable(false);
             //this.gS.visible=this.gR.visible=false;
             break;
-
     }
 }
 
@@ -119,7 +150,7 @@ editableImage.prototype.startDrag = function(e)
     this.offsetY=mousePos.y-this.y;
     //TODO drag start here
     console.log("HIIITTT ROTATION::", Q.hitTestPoint(this.gR,mousePos.x,mousePos.y),"HIIITTT SCALING::",Q.hitTestPoint(this.gS,mousePos.x,mousePos.y));
-    if(Q.hitTestPoint(this.gR,mousePos.x,mousePos.y)==1)
+   /* if(Q.hitTestPoint(this.gR,mousePos.x,mousePos.y)==1)
     {
         this.rotationImage();
         //this.eventChildren=true;
@@ -131,7 +162,7 @@ editableImage.prototype.startDrag = function(e)
         this._state=STATE.scaling;
         this.scaleStartX=mousePos.x;
         this.scaleStartY=mousePos.y;
-    }else {
+    }else {*/
         //this.eventChildren=false;
         if (!this._state!=STATE.dragging) {
             //this.dragging = true;
@@ -141,7 +172,7 @@ editableImage.prototype.startDrag = function(e)
             this.setEditable(true);
         }
         console.log("OFFSET::::", this.offsetX, this.offsetY);
-    }
+   // }
     var selectFariyEvent =new CustomEvent("SELECT_A_FARIY",{'detail':this});
     this.dispatchEvent(selectFariyEvent,this);
     //self.setState(STATE.editing);
@@ -150,16 +181,9 @@ editableImage.prototype.startDrag = function(e)
 editableImage.prototype.stopDrag = function(e)
 {
     //this.eventChildren=false;
-    if(this._state!=STATE.none)
+   if(this._state!=STATE.none)
     {
         this._state=STATE.none;
-    }
-    if(this._state==STATE.scaling)
-    {
-        this._image.width=
-        this.width*=this._scaleX;
-        this._image.height=
-        this.height*=this._scaleY;
     }
     // console.log("THIS IS:",self.x+(self.offsetX),self.y+(self.offsetY))
 };
@@ -170,33 +194,12 @@ editableImage.prototype.update = function()
     {
         this.x=mousePos.x-this.offsetX;
         this.y=mousePos.y-this.offsetY;
-    }else if(this._state==STATE.scaling)
+    }
+    else if(this._state==STATE.scaling)
     {
-        this.gS.x=mousePos.x-this.x;
-        this.gS.y=mousePos.y-this.y;
 
-        //var prevX=mousePos.x;
-        //var prevY=mousePos.y;
-
-        var subX=this.gS.x-this.scaleStartX;
-        var subY=this.gS.y-this.scaleStartY;
-        //this.scaleStartX=mousePos.x;
-        //this.scaleStartY=mousePos.y;
-         /*var _scaleX=1-subX/this._image.width;
-        var _scaleY=1-subY/this._image.height;*/
-        console.log("subWidth::",subX,this.scaleStartX,"THIS.WIDTH::",this.width*this._scaleX);
-        this._scaleX=1-(subX)/(this.width*this._scaleX);
-        this._scaleY=1-(subY)/(this.height*this._scaleY);
-       // this.testRect.scaleX=
-            this._image.scaleX=this._scaleX;
-        //this.testRect.scaleY=
-            this._image.scaleY=this._scaleY;
-
-        this.gR.x=this._image.width*this._image.scaleX-(this.gR.width>>1);
-        this.gR.y=this._image.width*this._image.scaleY-(this.gR.width>>1);
-        //this._image.scaleX=_scaleX;
-        //this._image.scaleY=_scaleY;
-    }else if(this._state==STATE.rotation)
+    }
+    else if(this._state==STATE.rotation)
     {
 
     }
