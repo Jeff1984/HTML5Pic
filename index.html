@@ -10,6 +10,8 @@
     <img id="MM" src="3.png" style="display: none"/>
     <img id="TQS" src="4.png" style="display: none"/>
     <img id="AK" src="5.png" style="display: none"/>
+
+    <img id="btns" src="btns.png" style="display:none;" />
     <title>Take or select photo(s) and upload</title>
     <form method="post" accept-charset="utf-8" name="form1">
         <input name="hidden_data" id='hidden_data' type="hidden"/>
@@ -34,6 +36,8 @@
         var editArr=[];
 
         var AnchorRota,AnchorScale;
+
+        var startRtateX,startRotateY;
         window.addEventListener("load",eventWinLoaded,false);
 
 		//or create a CanvasContext
@@ -56,7 +60,6 @@
             {
                 //write your own update code here
             }});
-
 
             container.addEventListener('mousemove', function(evt) {
                 mousePos = getMousePos(container, evt);
@@ -82,15 +85,14 @@
                 stage.addChild(im);
                 console.log("index is:",stage.getChildIndex(im));
                 editArr.push(im);
-                //im.scaleX=100/im.width;
-                //im.scaleY=100/im.height;
-                im.setWidth(100);
-                im.setHeight(100);
+                im.setWidth(200);
+                im.setHeight(200);
 
                 im.addEventListener("SELECT_A_FARIY",function (e)
                 {
                     console.log("LOG::", e.detail.name);
                     selectedTarget=e.detail;
+                    AnchorRota.visible=AnchorScale.visible=true;
                     repoAnchorToImage();
                     console.log("CHOOSED:",selectedTarget.name);
                     //selectedTarget.
@@ -104,22 +106,81 @@
                 },false);
             }
 
-            AnchorRota= new Q.Graphics({width:40, height:40,regX:20,regY:20});
-            AnchorRota.beginFill("#f00").drawRect(0.5, 0.5, 40, 40).endFill().cache();
+            AnchorRota= new Q.Button({id:"btn2", image:Q.getDOM("btns"), regX:32,regY:32, width:64, height:64,
+                up:{rect:[0,64,64,64]}});
 
-            AnchorScale = new Q.Graphics({width:40, height:40,regX:20,regY:20});
-            AnchorScale.beginFill("#00f").drawRect(0.5, 0.5, 40, 40).endFill().cache();
+            AnchorScale =new Q.Button({id:"btn1", image:Q.getDOM("btns"),x:32,y:32,regY:32, regX:32, width:64, height:64,
+                up:{rect:[0,0,64,64]}});
+
+            AnchorRota.addEventListener(events[0],startRotate,false);
+            AnchorRota.addEventListener(events[2],stopScaleOrRotate,false);
+            AnchorScale.addEventListener(events[0],startScale,false);
+            AnchorScale.addEventListener(events[2],stopScaleOrRotate,false)
 
             stage.addChild(AnchorRota,AnchorScale);
+            AnchorRota.visible=AnchorScale.visible=false;
+        }
+
+        function startRotate(e)
+        {
+            if (selectedTarget != null) {
+                selectedTarget.setState(STATE.rotating);
+                startRtateX=  AnchorRota.x = mousePos.x;
+                startRtateY=  AnchorRota.y = mousePos.y;
+            }
+        }
+
+        function stopScaleOrRotate(e)
+        {
+            selectedTarget.setState(STATE.none);
+        }
+
+        function startScale(e){
+            if (selectedTarget != null) {
+                selectedTarget.setState(STATE.scaling);
+                AnchorScale.x = mousePos.x;
+                AnchorScale.y = mousePos.y;
+            }
         }
 
         function repoAnchorToImage() {
+            var halfWidth,halfHeight;
             if (selectedTarget != null) {
+                halfWidth=selectedTarget.getWidth()>>1;
+                halfHeight=selectedTarget.getHeight()>>1;
+                if(selectedTarget.getState()==STATE.scaling)
+                {
+                    selectedTarget.setWidth(selectedTarget.getWidth()+mousePos.x- AnchorScale.x);
+                    selectedTarget.setHeight(selectedTarget.getHeight()+mousePos.y- AnchorScale.y)
+                    AnchorScale.x = mousePos.x;
+                    AnchorScale.y = mousePos.y;
 
-                AnchorRota.x = selectedTarget.x;
-                AnchorRota.y = selectedTarget.y;//+selectedTarget.width
-                AnchorScale.x = selectedTarget.x + selectedTarget.getWidth();
-                AnchorScale.y = selectedTarget.y + selectedTarget.getHeight();
+                }else if(selectedTarget.getState()==STATE.rotating)
+                {
+                    //var dx=mousePos.x-selectedTarget.getWidth()-selectedTarget.x//-selectedTarget.getWidth();
+                    //var dy=mousePos.y-selectedTarget.y;
+                    var dx=mousePos.x-selectedTarget.x;
+                    var dy=mousePos.y-selectedTarget.y;
+
+                    var r=Math.atan2(dy,dx)*180/Math.PI;
+
+                    selectedTarget.rotation=r;
+                    AnchorRota.x = mousePos.x;
+                    AnchorRota.y = mousePos.y;
+                    //console.log(mousePos.x,mousePos.y,selectedTarget.x,selectedTarget.y,"dd::",dy,dx,r,Math.tan(r));
+
+                    //AnchorScale.x = selectedTarget.x + (selectedTarget.getWidth())*Math.cos(r/180*Math.PI);
+                    //AnchorScale.y = selectedTarget.y + (selectedTarget.getHeight())*Math.sin(r/180*Math.PI);
+                }else
+                {
+                    AnchorRota.x = selectedTarget.x + halfWidth;
+                    AnchorRota.y = selectedTarget.y- halfHeight;//+selectedTarget.width;
+
+                   AnchorScale.x = selectedTarget.x +halfWidth;
+                   AnchorScale.y = selectedTarget.y +halfHeight;
+                }
+
+                //console.log(selectedTarget.getWidth(),AnchorRota.x);
             }
         }
 

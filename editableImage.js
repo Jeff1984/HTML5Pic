@@ -1,13 +1,11 @@
 /**
  * Created by zhangchi on 2015/1/15.
  */
-var self;
-
 const STATE={
     editing:"editing",
     dragging:"dragging",
     scaling:"scaling",
-    rotation:"rotation",
+    rotating:"rotating",
     none:"none"
 }
 var editableImage = function(name,props)
@@ -15,9 +13,6 @@ var editableImage = function(name,props)
     this.srcName=name;
     this._scaleX=1;
     this._scaleY=1;
-
-    this._width=0;
-    this._height=0;
 
     this._rotation=0;
     //self=this;
@@ -32,45 +27,25 @@ editableImage.prototype.init=function()
     //this.dragging=false;
     this.eventChildren=false;
 
-    this.gS = new Q.Graphics({width:40, height:40,x:-20,y:-20});
+    /*this.gS = new Q.Graphics({width:40, height:40,x:-20,y:-20});
     this.gS.beginFill("#0ff").drawRect(0.5, 0.5, 40, 40).endFill().cache();
 
     this.gR = new Q.Graphics({width:40, height:40,x:this._image.width,y:this._image.height});
-    this.gR.beginFill("#f00").drawRect(0.5, 0.5, 40, 40).endFill().cache();
+    this.gR.beginFill("#f00").drawRect(0.5, 0.5, 40, 40).endFill().cache();*/
 
     this.testRect=new Q.Graphics({width:this._image.width, height:this._image.height,regX:this._image.width>>1,regY:this._image.height>>1,x:this._image.width>>1,y:this._image.height>>1});
     this.testRect.beginFill("#510").drawRect(5, 5, this._image.width, this._image.height).endFill().cache();
     this.addChild(this.testRect,this._image);
     //gS.addEventListener(events[0],this.scaleImage);
     //gR.addEventListener(events[0],this.rotationImage);
-    this.addEventListener(events[0], this.startDrag);
-    this.addEventListener(events[2], this.stopDrag);
-    this.gS.visible=this.gR.visible=false;
+    this.addEventListener(events[0], this.startDrag,false);
+    this.addEventListener(events[2], this.stopDrag,false);
+    //this.gS.visible=this.gR.visible=false;
     this._state=STATE.none;
 
-    //this.regX=this._image.width>>1;
-    //this.regY=this._image.height>>1;
+    this._image.x=this.regX=this._image.regX=this._image.width>>1;
+    this._image.y=this.regY=this._image.regY=this._image.height>>1;
 
-    /*this.gS.x=
-    this.gS.regX=this.gS.width>>1;
-    this.gS.y=
-    this.gS.regY=this.gS.height>>1;
-
-    this.gR.x=this._image.width-(this.gR.width>>1);
-    this.gR.regX=this.gR.width>>1;
-    this.gR.y=this._image.height-(this.gR.height>>1);
-    this.gR.regY=this.gR.height>>1*/
-
-    this._image.x=
-    this._image.regX=this._image.width>>1;
-    this._image.y=
-    this._image.regY=this._image.height>>1;
-
-    //this._width=this._image.width;
-    //this._height=this._image.height;
-    //this.
-    //this.scaleStartX;
-    //this.scaleStartY;
 };
 
 editableImage.prototype.setEditable=function(value)
@@ -82,13 +57,19 @@ editableImage.prototype.setEditable=function(value)
    // this.gS.visible=this.gR.visible=value;
 };
 
+editableImage.prototype.setRotation=function (value)
+{
+    this._rotation=value;
+    this.rotation=value;
+}
+
 editableImage.prototype.setWidth=function(value)
 {
     this._scaleX=value/this._image.width;
     this.scaleX=this._scaleX
 }
 
-editableImage.prototype.getWidth=function(value)
+editableImage.prototype.getWidth=function()
 {
     return this._image.width*this._scaleX;
 }
@@ -99,7 +80,7 @@ editableImage.prototype.setHeight=function(value)
     this.scaleY=this._scaleY;
 }
 
-editableImage.prototype.getHeight=function(value)
+editableImage.prototype.getHeight=function()
 {
     return this._image.height*this._scaleY;
 }
@@ -121,7 +102,7 @@ editableImage.prototype.setState = function(value)
         case STATE.editing:
         case STATE.dragging:
         case STATE.rotation:
-        case  STATE.scaling:
+        case STATE.scaling:
             this.setEditable(true);
             //this.gS.alpha=this.gR.alpha=1;
             break;
@@ -149,7 +130,7 @@ editableImage.prototype.startDrag = function(e)
     this.offsetX=mousePos.x-this.x;
     this.offsetY=mousePos.y-this.y;
     //TODO drag start here
-    console.log("HIIITTT ROTATION::", Q.hitTestPoint(this.gR,mousePos.x,mousePos.y),"HIIITTT SCALING::",Q.hitTestPoint(this.gS,mousePos.x,mousePos.y));
+    //console.log("HIIITTT ROTATION::", Q.hitTestPoint(this.gR,mousePos.x,mousePos.y),"HIIITTT SCALING::",Q.hitTestPoint(this.gS,mousePos.x,mousePos.y));
    /* if(Q.hitTestPoint(this.gR,mousePos.x,mousePos.y)==1)
     {
         this.rotationImage();
@@ -167,6 +148,8 @@ editableImage.prototype.startDrag = function(e)
         if (!this._state!=STATE.dragging) {
             //this.dragging = true;
             this._state=STATE.dragging;
+           // var test=this.getWidth();
+            //this.setWidth(test+=10);
         }
         if (!this._editable) {
             this.setEditable(true);
@@ -181,7 +164,7 @@ editableImage.prototype.startDrag = function(e)
 editableImage.prototype.stopDrag = function(e)
 {
     //this.eventChildren=false;
-   if(this._state!=STATE.none)
+   if(this._state==STATE.dragging)
     {
         this._state=STATE.none;
     }
