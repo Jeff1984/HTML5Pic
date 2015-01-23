@@ -3,21 +3,17 @@
 <html>
  
 <head>
-    <div id="container" style="margin-top: 0px"/>
-    <meta http-equiv="content-type" content="text/html" charset="utf-8"/>
-    <img id="HH" src="1.png" style="display: none"/>
-    <img id="TS" src="2.png" style="display: none"/>
-    <img id="MM" src="3.png" style="display: none"/>
-    <img id="TQS" src="4.png" style="display: none"/>
-    <img id="AK" src="5.png" style="display: none"/>
 
-    <img id="scale" src="scale.png" style="display:none;" />
-    <img id="rotate" src="rotate.png" style="display:none;" />
+<meta http-equiv="content-type" content="text/html" charset="utf-8"/>
+<!-- id="HH" src="1.png" style="display:none"/>
+<img id="TS" src="2.png" style="display:none"/>
+<img id="MM" src="3.png" style="display:none"/>
+<img id="TQS" src="4.png" style="display:none"/>
+<img id="AK" src="5.png" style="display:none"/>
+
+<img id="scale" src="scale.png" style="display:none;" />
+<img id="rotate" src="rotate.png" style="display:none;" />-->
     <title>Take or select photo(s) and upload</title>
-    <form method="post" accept-charset="utf-8" name="form1">
-        <input name="hidden_data" id='hidden_data' type="hidden"/>
-    </form>
-    <body onmousedown="return false;">
 	<script src="quark.base-1.0.0.js"></script>
     <script src="editableImage.js"></script>
     <script type="text/javascript">
@@ -39,25 +35,40 @@
         var AnchorRota,AnchorScale;
 
         var startRtateX,startRotateY;
+        //document.getElementById("parm").innerHTML="Notinit";
+        window.onload = init;
         //window.addEventListener("load",eventWinLoaded,false);
-
+        alert("Notinit");
 		//or create a CanvasContext
-        //function eventWinLoaded(){
+        function init(){
 
             //canvas.id="picture";
-            container = Quark.getDOM("container");
-            domContext = new Quark.DOMContext({canvas:container});
+            alert("init");
+            container = Q.getDOM("container");
+            //domContext = new Q.DOMContext({canvas:container});
 
+            params = Quark.getUrlParams();
+            if(params.mode == undefined) params.mode = 2;
+
+
+            //if(params.mode == 1)
+            //{
+                canvas = Q.createDOM("canvas", {width:600, height:800, style:
+                {
+                    position:"absolute",
+                    backgroundColor:"#000"
+                }});
+
+                container.appendChild(canvas);
+
+                var canvasContext = new Q.CanvasContext({canvas:canvas});
+            ///}else
+            //{
+                domContext = new Quark.DOMContext({canvas:container});
+           // }
+            document.getElementById("parm").innerHTML=params.mode;
             //
-            //var container = Quark.getDOM("container");
-            canvas = Quark.createDOM("canvas", {width:600, height:800, style:
-            {
-                position:"absolute",
-                backgroundColor:"#000"
-            }});
-            container.appendChild(canvas);
-            var canvasContext = new Quark.CanvasContext({canvas:canvas});
-            stage = new Quark.Stage({width:600, height:800,y:48,x:8,context:domContext, update:function()
+            stage = new Q.Stage({width:600, height:800,context:domContext, update:function()
             {
                 //write your own update code here
             }});
@@ -79,7 +90,7 @@
             em.registerStage(stage, events);
 
             //ADd
-            var im,origChildId;
+            /*var im,origChildId;
             for(var i=0;i<5;i++)
             {
                 im=new editableImage(getFairy(i),{id:"edit",x:0,y:0,autoSize:true});
@@ -107,7 +118,6 @@
                         if(im.name!=e.detail.name)
                         {
                             im.setState(STATE.none);
-
                         }
                     }
                 },false);
@@ -130,8 +140,8 @@
             //stage.addChild(g3);
             //g3.width=400;
             stage.addChild(AnchorRota,AnchorScale);
-            AnchorRota.visible=AnchorScale.visible=false;
-       // }
+            AnchorRota.visible=AnchorScale.visible=false;*/
+        }
 
         function startRotate(e)
         {
@@ -279,26 +289,6 @@
         {
             var id=getFairyByName(name);
             editArr[id].visible=true;
-            /*var im=new editableImage(name,{id:"edit",x:0,y:0,autoSize:true});
-            im.name=name;
-
-            im.addEventListener("SELECT_A_FARIY",function (e)
-            {
-                console.log("LOG::", e.detail.name);
-                selectedTarget=e.detail;
-                console.log("CHOOSED:",selectedTarget.name);
-                //selectedTarget.
-                for(im of editArr)
-                {
-                    if(im.name!=e.detail.name)
-                    {
-                        im.setState(STATE.none);
-                    }
-                }
-            },false);
-            //im.dispatchEvent(selectFariyEvent);
-            stage.addChild(im);
-            editArr.push(im);*/
         }
 
         function setSelectImage(value)
@@ -321,7 +311,7 @@
 
             {
                 var file = document.getElementById('fileToUpload').files[index];
-                this.loadFileToNewCanvas(file);
+                loadFileToNewCanvas(file);
                 /*var fileSize = 0;
 
                 if (file.size > 1024 * 1024)
@@ -341,7 +331,7 @@
 
         function loadFileToNewCanvas(file)
         {
-            var ctx=canvas.getContext("2d");
+           var ctx=canvas.getContext("2d");
             var img=new Image();
             img.src=window.URL.createObjectURL(file);
             img.onload=function(){
@@ -366,26 +356,25 @@
  
 <body>
  
-  <!--<form id="form1" enctype="multipart/form-data">-->
- 
-    <div>
-        <label for="fileToUpload">Take or select photo(s)1.0.5</label>
-        <div id="buttonContainer" style="margin-top: 1px; text-align: center;" >
 
-            <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"  style="margin-top: 0px"/>
-            <input type="button" onclick="uploadFile()" value="Upload" />
+    <div>
+        <label id="parm">12222</label>
+        <label for="fileToUpload">Take or select photo(s)1.0.9</label>
+            <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
             <input type="button" onclick="combinePic1()" value="花花" />
             <input type="button" onclick="combinePic2()" value="天使" />
             <input type="button" onclick="combinePic3()" value="喵喵" />
             <input type="button" onclick="combinePic4()" value="铁骑士" />
             <input type="button" onclick="combinePic5()" value="奥可" />
 
-            <input type="button" onclick="copyCanvas()" value="CopyCanvas" />
-        </div>
+            <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
+
+            <!--<input type="button" onclick="copyCanvas()" value="CopyCanvas" />-->
     </div>
  
     <div id="details"></div>
     <div id="progress"></div>
+    <div id="container"/>
  <!-- </form>-->
  
 </body>

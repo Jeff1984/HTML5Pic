@@ -17,6 +17,26 @@
   <component name="DaemonCodeAnalyzer">
     <disable_hints />
   </component>
+  <component name="DockManager">
+    <window id="1">
+      <content type="file-editors">
+        <state>
+          <leaf>
+            <file leaf-file-name="graphics.html" pinned="false" current="false" current-in-tab="true">
+              <entry file="file://$PROJECT_DIR$/graphics.html">
+                <provider selected="true" editor-type-id="text-editor">
+                  <state vertical-scroll-proportion="0.92382497" vertical-offset="114" max-vertical-offset="2052">
+                    <caret line="36" column="17" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
+                    <folding />
+                  </state>
+                </provider>
+              </entry>
+            </file>
+          </leaf>
+        </state>
+      </content>
+    </window>
+  </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FavoritesManager">
     <favorites_list name="php" />
@@ -26,13 +46,19 @@
       <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.269103" vertical-offset="6887" max-vertical-offset="7562">
-              <caret line="371" column="62" selection-start-line="371" selection-start-column="62" selection-end-line="371" selection-end-column="62" />
-              <folding>
-                <element signature="n#style#0;n#div#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-                <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.8372093" vertical-offset="750" max-vertical-offset="7353">
+              <caret line="66" column="70" selection-start-line="66" selection-start-column="70" selection-end-line="66" selection-end-column="70" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="quark.base-1.0.0.js" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/quark.base-1.0.0.js">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0" vertical-offset="61573" max-vertical-offset="79610">
+              <caret line="3256" column="49" selection-start-line="3256" selection-start-column="49" selection-end-line="3256" selection-end-column="49" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -114,6 +140,7 @@
         <option value="$PROJECT_DIR$/dragableButton.js" />
         <option value="$PROJECT_DIR$/rotate.html" />
         <option value="$PROJECT_DIR$/editableImage.js" />
+        <option value="$PROJECT_DIR$/graphics.html" />
         <option value="$PROJECT_DIR$/index.html" />
       </list>
     </option>
@@ -298,7 +325,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="83" />
+      <option name="time" value="91" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -306,11 +333,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="4351">
           <caret line="124" column="21" selection-start-line="124" selection-start-column="21" selection-end-line="124" selection-end-column="21" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -326,11 +349,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="1488" max-vertical-offset="4351">
           <caret line="89" column="12" selection-start-line="89" selection-start-column="12" selection-end-line="89" selection-end-column="12" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -410,16 +429,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/quark.base-1.0.0.js">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33281735" vertical-offset="57602" max-vertical-offset="79610">
-          <caret line="3047" column="22" selection-start-line="3047" selection-start-column="22" selection-end-line="3047" selection-end-column="22" />
-          <folding>
-            <marker date="1341850372000" expanded="false" signature="-1:-1" placeholder="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/rotate.html">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.33222592" vertical-offset="1187" max-vertical-offset="2299">
@@ -436,15 +445,27 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/graphics.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.92382497" vertical-offset="114" max-vertical-offset="2052">
+          <caret line="36" column="17" selection-start-line="36" selection-start-column="17" selection-end-line="36" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/quark.base-1.0.0.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="61573" max-vertical-offset="79610">
+          <caret line="3256" column="49" selection-start-line="3256" selection-start-column="49" selection-end-line="3256" selection-end-column="49" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.269103" vertical-offset="6887" max-vertical-offset="7562">
-          <caret line="371" column="62" selection-start-line="371" selection-start-column="62" selection-end-line="371" selection-end-column="62" />
-          <folding>
-            <element signature="n#style#0;n#div#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
-            <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.8372093" vertical-offset="750" max-vertical-offset="7353">
+          <caret line="66" column="70" selection-start-line="66" selection-start-column="70" selection-end-line="66" selection-end-column="70" />
+          <folding />
         </state>
       </provider>
     </entry>
