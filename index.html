@@ -144,14 +144,16 @@
         }
 
         function repoAnchorToImage() {
-            var halfWidth,halfHeight;
+            var halfWidth,halfHeight,scaleNum,btMul=3;
             if (selectedTarget != null) {
-                halfWidth=selectedTarget.getWidth()>>1;
-                halfHeight=selectedTarget.getHeight()>>1;
+                halfWidth=selectedTarget.getWidth()/btMul;
+                halfHeight=selectedTarget.getHeight()/btMul;
                 if(selectedTarget.getState()==STATE.scaling)
                 {
-                    selectedTarget.setWidth(selectedTarget.getWidth()+mousePos.x- AnchorScale.x);
-                    selectedTarget.setHeight(selectedTarget.getHeight()+mousePos.y- AnchorScale.y)
+                    scaleNum=Math.abs((mousePos.x- AnchorScale.x))>=Math.abs((mousePos.y- AnchorScale.y))?
+                            (mousePos.y- AnchorScale.y)*btMul:(mousePos.x- AnchorScale.x)*btMul
+                    selectedTarget.setWidth(selectedTarget.getWidth()+scaleNum);
+                    selectedTarget.setHeight(selectedTarget.getHeight()+scaleNum);
                     AnchorScale.x = mousePos.x;
                     AnchorScale.y = mousePos.y;
 
@@ -162,7 +164,8 @@
                     var dx=mousePos.x-selectedTarget.x;
                     var dy=mousePos.y-selectedTarget.y;
 
-                    var r=Math.atan2(dy,dx)*180/Math.PI;
+                    //just for test
+                    var r=Math.atan2(dy,dx)*180/Math.PI+45;
 
                     selectedTarget.rotation=r;
                     AnchorRota.x = mousePos.x;
