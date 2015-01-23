@@ -33,9 +33,10 @@ editableImage.prototype.init=function()
     this.gR = new Q.Graphics({width:40, height:40,x:this._image.width,y:this._image.height});
     this.gR.beginFill("#f00").drawRect(0.5, 0.5, 40, 40).endFill().cache();*/
 
-    this.testRect=new Q.Graphics({width:this._image.width, height:this._image.height,regX:this._image.width>>1,regY:this._image.height>>1,x:this._image.width>>1,y:this._image.height>>1});
-    this.testRect.beginFill("#510").drawRect(5, 5, this._image.width, this._image.height).endFill().cache();
-    this.addChild(this.testRect,this._image);
+    //this.testRect=new Q.Graphics({width:this._image.width, height:this._image.height,regX:this._image.width>>1,regY:this._image.height>>1,x:this._image.width>>1,y:this._image.height>>1});
+    //this.testRect.beginFill("#510").drawRect(5, 5, this._image.width, this._image.height).endFill().cache();
+    //this.addChild(this.testRect);
+    this.addChild(this._image)
     //gS.addEventListener(events[0],this.scaleImage);
     //gR.addEventListener(events[0],this.rotationImage);
     this.addEventListener(events[0], this.startDrag,false);

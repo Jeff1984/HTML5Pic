@@ -26,22 +26,13 @@
       <file leaf-file-name="index.html" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/index.html">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.07973422" vertical-offset="2726" max-vertical-offset="6878">
-              <caret line="146" column="53" selection-start-line="146" selection-start-column="53" selection-end-line="146" selection-end-column="53" />
+            <state vertical-scroll-proportion="0.269103" vertical-offset="6887" max-vertical-offset="7562">
+              <caret line="371" column="62" selection-start-line="371" selection-start-column="62" selection-end-line="371" selection-end-column="62" />
               <folding>
                 <element signature="n#style#0;n#div#0;n#head#0;n#html#0;n#!!top" expanded="true" />
                 <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="rotate.html" pinned="false" current="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/rotate.html">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-3.508772" vertical-offset="1187" max-vertical-offset="2299">
-              <caret line="73" column="49" selection-start-line="73" selection-start-column="42" selection-end-line="73" selection-end-column="49" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -49,8 +40,8 @@
       <file leaf-file-name="editableImage.js" pinned="false" current="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/editableImage.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="431" max-vertical-offset="3686">
-              <caret line="46" column="44" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
+            <state vertical-scroll-proportion="0.0" vertical-offset="171" max-vertical-offset="3705">
+              <caret line="30" column="30" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -307,7 +298,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="81" />
+      <option name="time" value="83" />
     </breakpoint-manager>
   </component>
   <component name="editorHistoryManager">
@@ -318,6 +309,7 @@
           <folding>
             <element signature="n#style#0;n#div#0;n#head#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -337,6 +329,7 @@
           <folding>
             <element signature="n#style#0;n#div#0;n#head#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -419,15 +412,17 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/quark.base-1.0.0.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33277592" vertical-offset="13595" max-vertical-offset="79610">
-          <caret line="730" column="0" selection-start-line="730" selection-start-column="0" selection-end-line="731" selection-end-column="0" />
-          <folding />
+        <state vertical-scroll-proportion="0.33281735" vertical-offset="57602" max-vertical-offset="79610">
+          <caret line="3047" column="22" selection-start-line="3047" selection-start-column="22" selection-end-line="3047" selection-end-column="22" />
+          <folding>
+            <marker date="1341850372000" expanded="false" signature="-1:-1" placeholder="..." />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/rotate.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.508772" vertical-offset="1187" max-vertical-offset="2299">
+        <state vertical-scroll-proportion="0.33222592" vertical-offset="1187" max-vertical-offset="2299">
           <caret line="73" column="49" selection-start-line="73" selection-start-column="42" selection-end-line="73" selection-end-column="49" />
           <folding />
         </state>
@@ -435,19 +430,20 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/editableImage.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="431" max-vertical-offset="3686">
-          <caret line="46" column="44" selection-start-line="46" selection-start-column="44" selection-end-line="46" selection-end-column="44" />
+        <state vertical-scroll-proportion="0.0" vertical-offset="171" max-vertical-offset="3705">
+          <caret line="30" column="30" selection-start-line="30" selection-start-column="12" selection-end-line="30" selection-end-column="30" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/index.html">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.07973422" vertical-offset="2726" max-vertical-offset="6878">
-          <caret line="146" column="53" selection-start-line="146" selection-start-column="53" selection-end-line="146" selection-end-column="53" />
+        <state vertical-scroll-proportion="0.269103" vertical-offset="6887" max-vertical-offset="7562">
+          <caret line="371" column="62" selection-start-line="371" selection-start-column="62" selection-end-line="371" selection-end-column="62" />
           <folding>
             <element signature="n#style#0;n#div#0;n#head#0;n#html#0;n#!!top" expanded="true" />
             <element signature="n#style#0;n#img#0;n#head#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#0;n#img#1;n#head#0;n#html#0;n#!!top" expanded="true" />
           </folding>
         </state>
       </provider>
