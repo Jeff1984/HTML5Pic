@@ -19,11 +19,13 @@
     <script type="text/javascript">
 		//create a DOMContext
 		var container; //= Quark.getDOM("container");
-
+        //alert("Notinit");
 		var domContext; //= new Quark.DOMContext({canvas:container});
         var mousePos;
         var events;
         var selectedTarget;
+
+        var imageLoaded=0;
 
         const MAX_HEIGHT=800;
         const MAX_WIDTH=600;
@@ -31,6 +33,7 @@
         var stage;
         var canvas
         var editArr=[];
+        var imageDics;
 
         var AnchorRota,AnchorScale;
 
@@ -38,14 +41,14 @@
         //document.getElementById("parm").innerHTML="Notinit";
         window.onload = init;
         //window.addEventListener("load",eventWinLoaded,false);
-        alert("Notinit");
+
 		//or create a CanvasContext
+
         function init(){
 
             //canvas.id="picture";
             alert("init");
             container = Q.getDOM("container");
-            //domContext = new Q.DOMContext({canvas:container});
 
             params = Quark.getUrlParams();
             if(params.mode == undefined) params.mode = 2;
@@ -53,33 +56,36 @@
 
             //if(params.mode == 1)
             //{
-                canvas = Q.createDOM("canvas", {width:600, height:800, style:
-                {
-                    position:"absolute",
-                    backgroundColor:"#000"
+            try {
+                canvas = Q.createDOM("canvas", {width: 600, height: 800, style: {
+                    position: "absolute",
+                    backgroundColor: "#000"
                 }});
 
                 container.appendChild(canvas);
 
-                var canvasContext = new Q.CanvasContext({canvas:canvas});
-            ///}else
-            //{
-                domContext = new Quark.DOMContext({canvas:container});
+                var canvasContext = new Q.CanvasContext({canvas: canvas});
+                ///}else
+                //{
+                domContext = new Quark.DOMContext({canvas: container});
+                //alert(canvas);
+            }catch (e)
+            {
+                alert(e);
+            }
            // }
             document.getElementById("parm").innerHTML=params.mode;
             //
             stage = new Q.Stage({width:600, height:800,context:domContext, update:function()
             {
                 //write your own update code here
+                //document.getElementById("parm").innerHTML="for";
+
             }});
-
-            container.addEventListener('mousemove', function(evt) {
-                mousePos = getMousePos(container, evt);
-                repoAnchorToImage();
-                var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-                //console.log( message);
-            });
-
+            var loader = new Quark.ImageLoader();
+            //loader.addEventListener("loaded", onLoad);
+            loader.addEventListener("complete", onComplete);
+            loader.load([{id:"HH", src:"1.png"}, {id:"TS", src:"2.png"},{id:"MM", src:"3.png"},{id:"TQS", src:"4.png"},{id:"AK", src:"5.png"},{id:"scale", src:"scale.png"},{id:"rotate", src:"rotate.png"}]);
             var fps = 60;
             var timer = new Q.Timer(1000/fps);
             timer.addListener(stage);
@@ -89,8 +95,19 @@
             events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
             em.registerStage(stage, events);
 
-            //ADd
-            /*var im,origChildId;
+            container.addEventListener(events[1], function(evt) {
+                mousePos = getMousePos(container, evt);
+                repoAnchorToImage();
+                var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
+                //console.log( message);
+            });
+        }
+
+        function onComplete(e)
+        {
+            imageDics=e.images;
+            //alert("www");
+            var im,origChildId;
             for(var i=0;i<5;i++)
             {
                 im=new editableImage(getFairy(i),{id:"edit",x:0,y:0,autoSize:true});
@@ -100,6 +117,9 @@
                 editArr.push(im);
                 im.setWidth(200);
                 im.setHeight(200);
+
+                im.x=100;
+                im.y=100;
                 im.visible=false;
 
                 im.addEventListener("SELECT_A_FARIY",function (e)
@@ -113,23 +133,20 @@
                     repoAnchorToImage();
                     console.log("CHOOSED:",selectedTarget.name);
                     //selectedTarget.
-                    for(im of editArr)
+                    var i;
+                    for(i=0;i<editArr.length;i++)
                     {
-                        if(im.name!=e.detail.name)
+                        if(editArr[i].name!=e.detail.name)
                         {
-                            im.setState(STATE.none);
+                            editArr[i].setState(STATE.none);
                         }
                     }
                 },false);
             }
-
-            //var g3 = new Q.Graphics({width:200, height:200});
-            //g3.lineStyle(2, "#7db9e8").drawCircle(2, 2, 50).endFill().cache();
-
-            AnchorRota= new Q.Button({id:"btn2", image:Q.getDOM("rotate"), regX:32,regY:32, width:64, height:64,
+            AnchorRota= new Q.Button({id:"btn2", image:e.images.rotate.image, regX:32,regY:32, width:64, height:64,
                 up:{rect:[0,64,64,64]}});
 
-            AnchorScale =new Q.Button({id:"btn1", image:Q.getDOM("scale"),x:32,y:32,regY:32, regX:32, width:64, height:64,
+            AnchorScale =new Q.Button({id:"btn1",image:e.images.scale.image,x:32,y:32,regY:32, regX:32, width:64, height:64,
                 up:{rect:[0,0,64,64]}});
 
             AnchorRota.addEventListener(events[0],startRotate,false);
@@ -140,8 +157,9 @@
             //stage.addChild(g3);
             //g3.width=400;
             stage.addChild(AnchorRota,AnchorScale);
-            AnchorRota.visible=AnchorScale.visible=false;*/
+            AnchorRota.visible=AnchorScale.visible=false;
         }
+
 
         function startRotate(e)
         {
@@ -253,8 +271,10 @@
         }
 
         function getMousePos(canvas, evt) {
-            var rect = canvas.getBoundingClientRect();
-            return {
+           var rect = canvas.getBoundingClientRect();
+            var touchObj=evt.originalEvent.touches[0];
+            //document.getElementById("parm").innerHTML=touchObj.pageX;
+              return {
                 x: evt.clientX - rect.left,
                 y: evt.clientY - rect.top
             };
@@ -359,7 +379,7 @@
 
     <div>
         <label id="parm">12222</label>
-        <label for="fileToUpload">Take or select photo(s)1.0.9</label>
+        <label for="fileToUpload">Take or select photo(s)1.0.10</label>
             <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
             <input type="button" onclick="combinePic1()" value="花花" />
             <input type="button" onclick="combinePic2()" value="天使" />

@@ -23,7 +23,7 @@ Q.inherit(editableImage, Q.DisplayObjectContainer);
 
 editableImage.prototype.init=function()
 {
-    this._image=new Q.Bitmap({id:"head", image:Q.getDOM(this.srcName), x:0, y:0});
+    this._image=new Q.Bitmap({id:"head", image:imageDics[this.srcName].image, x:0, y:0});
     //this.dragging=false;
     this.eventChildren=false;
 
@@ -41,6 +41,7 @@ editableImage.prototype.init=function()
     //gR.addEventListener(events[0],this.rotationImage);
     this.addEventListener(events[0], this.startDrag,false);
     this.addEventListener(events[2], this.stopDrag,false);
+
     //this.gS.visible=this.gR.visible=false;
     this._state=STATE.none;
 
@@ -178,13 +179,8 @@ editableImage.prototype.update = function()
     {
         this.x=mousePos.x-this.offsetX;
         this.y=mousePos.y-this.offsetY;
-    }
-    else if(this._state==STATE.scaling)
-    {
+
 
     }
-    else if(this._state==STATE.rotation)
-    {
 
-    }
 }
