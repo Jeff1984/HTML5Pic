@@ -100,8 +100,8 @@
             events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
             em.registerStage(stage, events);
             //init listener
-            canvas.addEventListener(events[1], draw, false);
-            canvas.addEventListener(events[2], end, false);
+            container.addEventListener(events[1], draw, false);
+            container.addEventListener(events[2], end, false);
            /* container.addEventListener(events[1], function(evt) {
                 mousePos = getMousePos(container, evt);
                 repoAnchorToImage();
@@ -123,21 +123,23 @@
         function draw(e) {
             e.preventDefault();
             var rect = container.getBoundingClientRect();
-            if(mousePos!=null) {
+           // if(mousePos!=null) {
                 //ctx.beginPath();
                 //ctx.moveTo(lastPt.x, lastPt.y);
                // ctx.lineTo(e.touches[0].pageX, e.touches[0].pageY);
                // ctx.stroke();
-                console.log( mousePos.x,mousePos.y);
-                repoAnchorToImage();
-            }
+
+          //  }
             if(e.type == "mousemove")
             {
-                mousePos={x: e.pageX,y: e.pageY};
+                mousePos={x: e.clientX- rect.left,y: e.clientY- rect.top};
             }else
             {
-                mousePos = {x: e.touches[0].pageX, y: e.touches[0].pageY};
+                mousePos = {x: e.touches[0].clientX- rect.left, y: e.touches[0].clientY- rect.top};
             }
+
+            console.log( mousePos.x,mousePos.y);
+            repoAnchorToImage();
 
         }
 
