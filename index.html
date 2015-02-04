@@ -57,11 +57,10 @@
             params = Quark.getUrlParams();
             if(params.mode == undefined) params.mode = 2;
 
-
             //if(params.mode == 1)
             //{
             try {
-                canvas = Q.createDOM("canvas", {width: 600, height: 800, style: {
+                canvas = Q.createDOM("canvas", {width: 600, height: 800,style: {
                     position: "absolute",
                     backgroundColor: "#000"
                 }});
@@ -81,12 +80,19 @@
            // }
             document.getElementById("parm").innerHTML=params.mode;
             //
-            stage = new Q.Stage({width:600, height:800,context:domContext, update:function()
+            stage = new Q.Stage({width:600, height:800,y:25,x:10,
+                style: {
+                    //position: "absolute",
+                },
+                context:domContext, update:function()
             {
                 //write your own update code here
                 //document.getElementById("parm").innerHTML="for";
 
             }});
+
+            stage.updatePosition();
+
             var loader = new Quark.ImageLoader();
             //loader.addEventListener("loaded", onLoad);
             loader.addEventListener("complete", onComplete);
@@ -102,6 +108,7 @@
             //init listener
             container.addEventListener(events[1], draw, false);
             container.addEventListener(events[2], end, false);
+
            /* container.addEventListener(events[1], function(evt) {
                 mousePos = getMousePos(container, evt);
                 repoAnchorToImage();
@@ -110,26 +117,10 @@
             });*/
         }
 
-        /*function getMousePos(canvas, evt) {
-            var rect = canvas.getBoundingClientRect();
-            evt.preventDefault();
-            //var touchObj=evt.touches[0];
-            //document.getElementById("parm").innerHTML=touchObj.pageX;
-            return {
-                x: evt.clientX - rect.left,
-                y: evt.clientY - rect.top
-            };
-        }*/
         function draw(e) {
             e.preventDefault();
             var rect = container.getBoundingClientRect();
-           // if(mousePos!=null) {
-                //ctx.beginPath();
-                //ctx.moveTo(lastPt.x, lastPt.y);
-               // ctx.lineTo(e.touches[0].pageX, e.touches[0].pageY);
-               // ctx.stroke();
 
-          //  }
             if(e.type == "mousemove")
             {
                 mousePos={x: e.clientX- rect.left,y: e.clientY- rect.top};
@@ -137,7 +128,7 @@
             {
                 mousePos = {x: e.touches[0].clientX- rect.left, y: e.touches[0].clientY- rect.top};
             }
-
+            document.getElementById("parm").innerHTML=mousePos.x+"::"+mousePos.y
             console.log( mousePos.x,mousePos.y);
             repoAnchorToImage();
 
@@ -152,12 +143,10 @@
 
         function onComplete(e)
         {
-
             imageDics=e.images;
 
             //testDrag
             var testImage =e.images.HH.image;
-
 
             //alert("www");
             var im,origChildId;
@@ -207,8 +196,6 @@
             AnchorScale.addEventListener(events[0],startScale,false);
             AnchorScale.addEventListener(events[2],stopScaleOrRotate,false)
 
-            //stage.addChild(g3);
-            //g3.width=400;
             stage.addChild(AnchorRota,AnchorScale);
             AnchorRota.visible=AnchorScale.visible=false;
         }
@@ -322,11 +309,10 @@
                     break;
             }
         }
+        function copyCanvas(evt)
+        {
 
-
-
-        //em.registerStage(stage,)
-
+        }
         /*
         * fairy
         * */
@@ -353,6 +339,8 @@
         function showFairy(name)
         {
             var id=getFairyByName(name);
+            origChildId=stage.getChildIndex(editArr[id]);
+            stage.swapChildrenAt(origChildId,4);
             editArr[id].visible=true;
         }
 
@@ -420,11 +408,11 @@
 </head>
  
 <body>
- 
+    <!--<div id="details"></div>
+    <div id="progress"></div>-->
+    <div id="container"/>
 
-    <div>
-        <label id="parm">12222</label>
-        <label for="fileToUpload">Take or select photo(s)1.0.10</label>
+    <div  style="z-index: 0">
             <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
             <input type="button" onclick="combinePic1()" value="花花" />
             <input type="button" onclick="combinePic2()" value="天使" />
@@ -433,13 +421,12 @@
             <input type="button" onclick="combinePic5()" value="奥可" />
 
             <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
-
-            <!--<input type="button" onclick="copyCanvas()" value="CopyCanvas" />-->
+             <label id="parm">12222</label>
+             <label for="fileToUpload">Take or select photo(s)1.0.10</label>
+            <input type="button" onclick="copyCanvas()" value="CopyCanvas" />
     </div>
  
-    <div id="details"></div>
-    <div id="progress"></div>
-    <div id="container"/>
+
  <!-- </form>-->
  
 </body>
