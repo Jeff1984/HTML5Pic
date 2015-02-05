@@ -1,1 +1,1 @@
-pscp.exe -P 22 editableImage.js zhangchi@10.0.58.53:/var/www/ssh_test/php
+pscp.exe -P 22 editableImage.js zhangchi@10.0.55.212:/var/www/ssh_test/php

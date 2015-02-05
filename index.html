@@ -31,12 +31,14 @@
         const MAX_WIDTH=600;
         //var selectFariyEvent =new CustomEvent("SELECT_A_FARIY");
         var stage;
-        var canvas
+        var canvas,canvasCopy;
         var editArr=[];
         var imageDics;
         var lastPt=null;
 
-        var AnchorRota,AnchorScale;
+        var AnchorRota,AnchorScale,selectedFile;
+
+        const DEBUG=true;
 
         var startRtateX,startRotateY;
         //document.getElementById("parm").innerHTML="Notinit";
@@ -48,11 +50,9 @@
         function init(){
 
             //canvas.id="picture";
-            alert("init");
+            if(DEBUG)
+                alert("init");
             container = Q.getDOM("container");
-
-            //touchzone.addEventListener("touchmove", ontouchMove, false);
-            //touchzone.addEventListener("touchend", end, false);
 
             params = Quark.getUrlParams();
             if(params.mode == undefined) params.mode = 2;
@@ -66,6 +66,15 @@
                 }});
 
                 container.appendChild(canvas);
+
+               /* if(DEBUG) {
+                    canvasCopy= Q.createDOM("canvas", {width: 600, height: 800,style: {
+                        position: "absolute",
+                        left:"615px",
+                        backgroundColor: "#0ee"
+                    }});
+                    container.appendChild(canvasCopy);
+                }*/
 
                 var canvasContext = new Q.CanvasContext({canvas: canvas});
 
@@ -82,7 +91,7 @@
             //
             stage = new Q.Stage({width:600, height:800,y:25,x:10,
                 style: {
-                    //position: "absolute",
+                    position: "absolute",
                 },
                 context:domContext, update:function()
             {
@@ -91,7 +100,7 @@
 
             }});
 
-            stage.updatePosition();
+            alert(stage.y);
 
             var loader = new Quark.ImageLoader();
             //loader.addEventListener("loaded", onLoad);
@@ -129,7 +138,7 @@
                 mousePos = {x: e.touches[0].clientX- rect.left, y: e.touches[0].clientY- rect.top};
             }
             document.getElementById("parm").innerHTML=mousePos.x+"::"+mousePos.y
-            console.log( mousePos.x,mousePos.y);
+           // console.log( mousePos.x,mousePos.y);
             repoAnchorToImage();
 
         }
@@ -139,7 +148,6 @@
             // Terminate touch path
             mousePos=null;
         }
-
 
         function onComplete(e)
         {
@@ -166,14 +174,14 @@
 
                 im.addEventListener("SELECT_A_FARIY",function (e)
                 {
-                    console.log("LOGtarget::", e.detail.name);
+                    //alert("LOGtarget::", e.detail.name);
                     origChildId=stage.getChildIndex(e.detail);
                     console.log("LOGID::", e.detail.name,origChildId);
                     stage.swapChildrenAt(origChildId,4);
                     selectedTarget=e.detail;
                     AnchorRota.visible=AnchorScale.visible=true;
                     repoAnchorToImage();
-                    console.log("CHOOSED:",selectedTarget.name);
+                    alert("CHOOSED:",selectedTarget.name);
                     //selectedTarget.
                     var i;
                     for(i=0;i<editArr.length;i++)
@@ -309,13 +317,10 @@
                     break;
             }
         }
-        function copyCanvas(evt)
-        {
 
-        }
-        /*
+        /*******
         * fairy
-        * */
+        ********/
        function combinePic1(evt)
         {
             showFairy("HH");
@@ -352,6 +357,27 @@
             }
         }
 
+        function copyCanvas(evt)
+        {
+            //copy image pic to back, copy visible==true fairy to canvas and rotate it
+            var ctx=canvasCopy.getContext("2d");
+            var img=new Image();
+            img.src=window.URL.createObjectURL(selectedFile);
+            img.onload=function(){
+                ctx.clearRect(0,0,800,600);
+                if(img.height>MAX_HEIGHT)
+                {
+                    img.height=MAX_HEIGHT;
+                }
+                if(img.width>MAX_WIDTH)
+                {
+                    img.width=MAX_WIDTH;
+                }
+                canvasCopy.width=MAX_WIDTH;
+                canvasCopy.height=MAX_HEIGHT;
+                ctx.drawImage(img,0,0,img.width,img.height);
+            }
+        }
 
          //files related
         function fileSelected() {
@@ -384,8 +410,9 @@
 
         function loadFileToNewCanvas(file)
         {
-           var ctx=canvas.getContext("2d");
+            var ctx=canvas.getContext("2d");
             var img=new Image();
+            selectedFile=file;
             img.src=window.URL.createObjectURL(file);
             img.onload=function(){
                 ctx.clearRect(0,0,800,600);
@@ -407,28 +434,25 @@
  
 </head>
  
-<body>
-    <!--<div id="details"></div>
-    <div id="progress"></div>-->
-    <div id="container"/>
+    <body>
+        <!--<div id="details"></div>
+        <div id="progress"></div>-->
+        <div id="container"/>
 
-    <div  style="z-index: 0">
-            <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
-            <input type="button" onclick="combinePic1()" value="花花" />
-            <input type="button" onclick="combinePic2()" value="天使" />
-            <input type="button" onclick="combinePic3()" value="喵喵" />
-            <input type="button" onclick="combinePic4()" value="铁骑士" />
-            <input type="button" onclick="combinePic5()" value="奥可" />
+        <div  style="z-index: 0">
+                <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
+                <input type="button" onclick="combinePic1()" value="花花" />
+                <input type="button" onclick="combinePic2()" value="天使" />
+                <input type="button" onclick="combinePic3()" value="喵喵" />
+                <input type="button" onclick="combinePic4()" value="铁骑士" />
+                <input type="button" onclick="combinePic5()" value="奥可" />
+                <input type="button" onclick="copyCanvas()" value="CopyCanvas" />
+                <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
+                 <label id="parm">12222</label>
+                 <label for="fileToUpload">Take or select photo(s)1.0.10</label>
+        </div>
+     <!-- </form>-->
 
-            <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
-             <label id="parm">12222</label>
-             <label for="fileToUpload">Take or select photo(s)1.0.10</label>
-            <input type="button" onclick="copyCanvas()" value="CopyCanvas" />
-    </div>
- 
-
- <!-- </form>-->
- 
-</body>
+    </body>
  
 </html>
