@@ -15,7 +15,8 @@
 <img id="rotate" src="rotate.png" style="display:none;" />-->
     <title>Take or select photo(s) and upload</title>
 	<script src="quark.base-1.0.0.js"></script>
-    <script src="editableImage.js"></script>
+    <!--<script src="editableImage.js"></script>-->
+
     <script type="text/javascript">
 		//create a DOMContext
 		var container; //= Quark.getDOM("container");
@@ -43,15 +44,14 @@
         var startRtateX,startRotateY;
         //document.getElementById("parm").innerHTML="Notinit";
         window.onload = init;
-        //window.addEventListener("load",eventWinLoaded,false);
 
 		//or create a CanvasContext
 
         function init(){
 
             //canvas.id="picture";
-            if(DEBUG)
-                alert("init");
+           // if(DEBUG)
+                //alert("init");
             container = Q.getDOM("container");
 
             params = Quark.getUrlParams();
@@ -100,7 +100,7 @@
 
             }});
 
-            alert(stage.y);
+            //alert(stage.y);
 
             var loader = new Quark.ImageLoader();
             //loader.addEventListener("loaded", onLoad);
@@ -111,8 +111,8 @@
             timer.addListener(stage);
             timer.start();
 
-            var em = new Quark.EventManager();
-            events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
+           var em = new Quark.EventManager();
+           events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
             em.registerStage(stage, events);
             //init listener
             container.addEventListener(events[1], draw, false);
@@ -145,32 +145,50 @@
 
         function end(e) {
             e.preventDefault();
+            //alert("out");
             // Terminate touch path
-            mousePos=null;
+           // mousePos=null;
+            selectedTarget=null;
         }
 
         function onComplete(e)
         {
             imageDics=e.images;
-
+            //alert(imageDics);
             //testDrag
             var testImage =e.images.HH.image;
+
+            //test
+           /* var bmp2 = new Quark.Bitmap({image:testImage, regX:32, regY:42});
+            bmp2.x = 100;
+            bmp2.y = 100;
+            bmp2.scaleX = 2;
+            bmp2.scaleY = 2;
+            //stage.addChild(bmp2);
+            bmp2.addEventListener(events[0], function(e)
+            {
+                bmp2.scaleX = bmp2.scaleY = bmp2.scaleX == 1? 2 : 1;
+                //alert(e, e.type, e.eventX, e.eventY)
+            });*/
 
             //alert("www");
             var im,origChildId;
             for(var i=0;i<5;i++)
             {
+
                 im=new editableImage(getFairy(i),{id:"edit",x:0,y:0,autoSize:true});
                 im.name=getFairy(i);
+                //alert(im.name);
+
                 stage.addChild(im);
-                console.log("index is:",stage.getChildIndex(im));
+                //console.log("index is:",stage.getChildIndex(im));
                 editArr.push(im);
                 im.setWidth(200);
                 im.setHeight(200);
 
                 im.x=300;
                 im.y=300;
-                im.visible=false;
+                //im.visible=false;
 
                 im.addEventListener("SELECT_A_FARIY",function (e)
                 {
@@ -181,7 +199,6 @@
                     selectedTarget=e.detail;
                     AnchorRota.visible=AnchorScale.visible=true;
                     repoAnchorToImage();
-                    alert("CHOOSED:",selectedTarget.name);
                     //selectedTarget.
                     var i;
                     for(i=0;i<editArr.length;i++)
@@ -192,6 +209,8 @@
                         }
                     }
                 },false);
+
+
             }
             AnchorRota= new Q.Button({id:"btn2", image:e.images.rotate.image, regX:32,regY:32, width:64, height:64,
                 up:{rect:[0,64,64,64]}});
@@ -429,9 +448,186 @@
                 ctx.drawImage(img,0,0,img.width,img.height);
             }
         }
- 
+
+    //editableImage
+        /**
+         * Created by zhangchi on 2015/1/15.
+         */
+        const STATE={
+            editing:"editing",
+            dragging:"dragging",
+            scaling:"scaling",
+            rotating:"rotating",
+            none:"none"
+        }
+        var editableImage = function(name,props)
+        {
+            //alert("BEFORE");
+            this.srcName=name;
+            this._scaleX=1;
+            this._scaleY=1;
+
+            this._rotation=0;
+            //self=this;
+            editableImage.superClass.constructor.call(this, props);
+            this.init();
+        };
+        Q.inherit(editableImage, Q.DisplayObjectContainer);
+
+        editableImage.prototype.init=function()
+        {
+            this._image=new Q.Bitmap({id:"head", image:imageDics[this.srcName].image, x:0, y:0});
+            //alert(events[0],this._image);
+            //this.dragging=false;
+            this.eventChildren=false;
+            this.addChild(this._image)
+            //gS.addEventListener(events[0],this.scaleImage);
+            //gR.addEventListener(events[0],this.rotationImage);
+            this.addEventListener(events[0], this.startDrag,false);
+            this.addEventListener(events[2], this.stopDrag,false);
+
+            //alert(events[0],this._image);
+
+            //this.gS.visible=this.gR.visible=false;
+            this._state=STATE.none;
+
+            this._image.x=this.regX=this._image.regX=this._image.width>>1;
+            this._image.y=this.regY=this._image.regY=this._image.height>>1;
+
+        };
+
+        editableImage.prototype.setEditable=function(value)
+        {
+            if(this._editable!=value)
+            {
+                this._editable=value;
+            }
+            // this.gS.visible=this.gR.visible=value;
+        };
+
+        editableImage.prototype.setRotation=function (value)
+        {
+            this._rotation=value;
+            this.rotation=value;
+        }
+
+        editableImage.prototype.setWidth=function(value)
+        {
+            this._scaleX=value/this._image.width;
+            this.scaleX=this._scaleX
+        }
+
+        editableImage.prototype.getWidth=function()
+        {
+            return this._image.width*this._scaleX;
+        }
+
+        editableImage.prototype.setHeight=function(value)
+        {
+            this._scaleY=value/this._image.height;
+            this.scaleY=this._scaleY;
+        }
+
+        editableImage.prototype.getHeight=function()
+        {
+            return this._image.height*this._scaleY;
+        }
+
+
+        editableImage.prototype.getState=function()
+        {
+            return this._state;
+        }
+
+        editableImage.prototype.setState = function(value)
+        {
+            if(this._state!=value)
+            {
+                this._state=value
+            }
+            switch(value)
+            {
+                case STATE.editing:
+                case STATE.dragging:
+                case STATE.rotation:
+                case STATE.scaling:
+                    this.setEditable(true);
+                    //this.gS.alpha=this.gR.alpha=1;
+                    break;
+                case STATE.none:
+                    this.setEditable(false);
+                    //this.gS.visible=this.gR.visible=false;
+                    break;
+            }
+        }
+
+        editableImage.prototype.scaleImage = function(){
+            console.log("scaling");
+            //self.scaleX-=0.1;
+        }
+
+        editableImage.prototype.rotationImage = function(){
+            console.log("rotation");
+            //this.rotation+=0.5;
+            //self.scaleX-=0.1;
+        }
+
+
+        editableImage.prototype.startDrag = function(e)
+        {
+           // alert(this.x);
+           // alert(mousePos.x);
+            if(mousePos!=null) {
+               // alert(mousePos.x);
+                this.offsetX = mousePos.x - this.x;
+                this.offsetY = mousePos.y - this.y;
+            }
+            // alert("CHOOSED:",this.x);
+            //TODO drag start here
+            //console.log("HIIITTT ROTATION::", Q.hitTestPoint(this.gR,mousePos.x,mousePos.y),"HIIITTT SCALING::",Q.hitTestPoint(this.gS,mousePos.x,mousePos.y));
+
+            //this.eventChildren=false;
+            if (!this._state!=STATE.dragging) {
+                //this.dragging = true;
+                this._state=STATE.dragging;
+                // var test=this.getWidth();
+                //this.setWidth(test+=10);
+            }
+            if (!this._editable) {
+                this.setEditable(true);
+            }
+            console.log("OFFSET::::", this.offsetX, this.offsetY);
+            // }
+            var selectFariyEvent =new CustomEvent("SELECT_A_FARIY",{'detail':this});
+            this.dispatchEvent(selectFariyEvent,this);
+            //self.setState(STATE.editing);
+        };
+
+        editableImage.prototype.stopDrag = function(e)
+        {
+            e.preventDefault();
+            //this.eventChildren=false;
+            if(this._state==STATE.dragging)
+            {
+                this._state=STATE.none;
+            }
+            //this.visible=false;
+            //alert("UP");
+            // console.log("THIS IS:",self.x+(self.offsetX),self.y+(self.offsetY))
+        };
+
+        editableImage.prototype.update = function()
+        {
+            if(this._state==STATE.dragging&&mousePos!=null)
+            {
+                 this.x=mousePos.x-this.offsetX;
+                 this.y=mousePos.y-this.offsetY;
+            }
+
+        }
+
+
     </script>
- 
 </head>
  
     <body>
