@@ -30,12 +30,15 @@
 
         const MAX_HEIGHT=800;
         const MAX_WIDTH=600;
+        const LAND="LANDSCAPE";
+        const PORT="PORTRAIT";
         //var selectFariyEvent =new CustomEvent("SELECT_A_FARIY");
         var stage;
         var canvas,canvasCopy;
         var editArr=[];
         var imageDics;
         var lastPt=null;
+        var org;
 
         var AnchorRota,AnchorScale,selectedFile;
 
@@ -45,8 +48,22 @@
         //document.getElementById("parm").innerHTML="Notinit";
         window.onload = init;
 
-		//or create a CanvasContext
+        window.onorientationchange=readDeviceOrientation;
 
+		//or create a CanvasContext
+        function readDeviceOrientation()
+        {
+            //console.log(Math.abs(window.orientation));
+            if(Math.abs(window.orientation)===90)
+            {
+                org=LAND;
+                document.getElementById("orientation").innerHTML="LAND";
+            }else
+            {
+                org=PORT;
+                document.getElementById("orientation").innerHTML="PORT";
+            }
+        }
         function init(){
 
             //canvas.id="picture";
@@ -111,6 +128,8 @@
             timer.addListener(stage);
             timer.start();
 
+            var ti=setInterval(readDeviceOrientation,1/20);
+
            var em = new Quark.EventManager();
            events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
             em.registerStage(stage, events);
@@ -149,30 +168,13 @@
             // Terminate touch path
             mousePos=null;
             repoAnchorToImage();
-            //selectedTarget=null;
         }
 
         function onComplete(e)
         {
             imageDics=e.images;
             //alert(imageDics);
-            //testDrag
-            var testImage =e.images.HH.image;
 
-            //test
-           /* var bmp2 = new Quark.Bitmap({image:testImage, regX:32, regY:42});
-            bmp2.x = 100;
-            bmp2.y = 100;
-            bmp2.scaleX = 2;
-            bmp2.scaleY = 2;
-            //stage.addChild(bmp2);
-            bmp2.addEventListener(events[0], function(e)
-            {
-                bmp2.scaleX = bmp2.scaleY = bmp2.scaleX == 1? 2 : 1;
-                //alert(e, e.type, e.eventX, e.eventY)
-            });*/
-
-            //alert("www");
             var im,origChildId;
             for(var i=0;i<5;i++)
             {
@@ -389,6 +391,8 @@
             var img=new Image();
             img.src=window.URL.createObjectURL(selectedFile);
             img.onload=function(){
+
+
                 ctx.clearRect(0,0,800,600);
                 if(img.height>MAX_HEIGHT)
                 {
@@ -441,6 +445,9 @@
             img.src=window.URL.createObjectURL(file);
             img.onload=function(){
                 ctx.clearRect(0,0,800,600);
+                //alert(org);
+
+                //test
                 if(img.height>MAX_HEIGHT)
                 {
                     img.height=MAX_HEIGHT;
@@ -449,9 +456,19 @@
                 {
                     img.width=MAX_WIDTH;
                 }
-                canvas.width=MAX_WIDTH;
-                canvas.height=MAX_HEIGHT;
-                ctx.drawImage(img,0,0,img.width,img.height);
+                //canvas.width=MAX_WIDTH;
+                //canvas.height=MAX_HEIGHT;
+                if(org==PORT){
+                    ctx.translate(img.width,0);
+                    ctx.rotate(Math.PI/2);
+                    ctx.drawImage(img,0,0,img.width,img.height);
+
+                }else
+                {
+                    ctx.drawImage(img,0,0,img.height,img.width);
+                }
+               // ctx.drawImage(img,0,0,img.width,img.height);
+                ctx.restore();
             }
         }
 
@@ -648,20 +665,19 @@
 </head>
  
     <body>
-        <!--<div id="details"></div>
-        <div id="progress"></div>-->
         <div id="container"></div>
 
         <div id="buttonContainer" style="top:810px; left:0px; position:absolute" >
                 <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
-                <input type="button" onclick="combinePic1()" value="花花" style="height:80px"/>
-                <input type="button" onclick="combinePic2()" value="天使"  style="height:80px"/>
-                <input type="button" onclick="combinePic3()" value="喵喵"  style="height:80px"/>
-                <input type="button" onclick="combinePic4()" value="铁骑士"  style="height:80px"/>
-                <input type="button" onclick="combinePic5()" value="奥可"  style="height:80px"/>
+                <input type="button" onclick="combinePic1()" value="花花精灵" style="height:80px"/>
+                <input type="button" onclick="combinePic2()" value="天使精灵"  style="height:80px"/>
+                <input type="button" onclick="combinePic3()" value="喵喵精灵"  style="height:80px"/>
+                <input type="button" onclick="combinePic4()" value="铁骑士精灵"  style="height:80px"/>
+                <input type="button" onclick="combinePic5()" value="奥可精灵"  style="height:80px"/>
                 <input type="button" onclick="copyCanvas()" value="CopyCanvas"  style="height:80px"/>
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                  <label id="parm">12222</label>
+                  <label id="orientation">no way<label/>
                  <label for="fileToUpload">Take or select photo(s)1.0.10</label>
         </div>
      <!-- </form>-->
