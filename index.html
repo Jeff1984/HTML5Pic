@@ -41,7 +41,7 @@
 
         const DEBUG=true;
 
-        var startRtateX,startRotateY;
+        var startRtateX,startRotateY,dragOffsetX,dragOffsetY;
         //document.getElementById("parm").innerHTML="Notinit";
         window.onload = init;
 
@@ -137,7 +137,7 @@
             {
                 mousePos = {x: e.touches[0].clientX- rect.left, y: e.touches[0].clientY- rect.top};
             }
-            document.getElementById("parm").innerHTML=mousePos.x+"::"+mousePos.y
+            //document.getElementById("parm").innerHTML=mousePos.x+"::"+mousePos.y
            // console.log( mousePos.x,mousePos.y);
             repoAnchorToImage();
 
@@ -189,7 +189,7 @@
 
                 im.x=300;
                 im.y=300;
-                //im.visible=false;
+                im.visible=false;
 
                 im.addEventListener("SELECT_A_FARIY",function (e)
                 {
@@ -213,21 +213,21 @@
 
 
             }
-            AnchorRota= new Q.Button({id:"btn2", image:e.images.rotate.image, regX:32,regY:32, width:64, height:64,
-                up:{rect:[0,64,64,64]}});
+            AnchorRota= new Q.Button({id:"btn2", image:e.images.rotate.image, regX:60,regY:60, width:120, height:120,
+                up:{rect:[0,120,120,120]}});
 
-            AnchorScale =new Q.Button({id:"btn1",image:e.images.scale.image,x:32,y:32,regY:32, regX:32, width:64, height:64,
-                up:{rect:[0,0,64,64]}});
+            AnchorScale =new Q.Button({id:"btn1",image:e.images.scale.image,x:60,y:60,regY:60, regX:60, width:120, height:120,
+                up:{rect:[0,0,120,120]}});
 
             AnchorRota.addEventListener(events[0],startRotate,false);
             AnchorRota.addEventListener(events[2],stopScaleOrRotate,false);
             AnchorScale.addEventListener(events[0],startScale,false);
             AnchorScale.addEventListener(events[2],stopScaleOrRotate,false)
 
+            AnchorRota.scaleX=AnchorRota.scaleY=AnchorScale.scaleX=AnchorScale.scaleY=.7;
             stage.addChild(AnchorRota,AnchorScale);
             AnchorRota.visible=AnchorScale.visible=false;
         }
-
 
         function startRotate(e)
         {
@@ -289,6 +289,11 @@
 
                    AnchorScale.x = selectedTarget.x +halfWidth;
                    AnchorScale.y = selectedTarget.y +halfHeight;
+
+                    //dragOffsetX=mousePos.x-selectedTarget.x;
+                    //dragOffsetY=mousePos.y-selectedTarget.y;
+
+                    showDebug(dragOffsetX);
                 }
 
                 //console.log(selectedTarget.getWidth(),AnchorRota.x);
@@ -450,6 +455,11 @@
             }
         }
 
+        function showDebug(Str)
+        {
+            document.getElementById("parm").innerHTML=Str;//mousePos.x+"::"+mousePos.y
+        }
+
     //editableImage
         /**
          * Created by zhangchi on 2015/1/15.
@@ -580,8 +590,9 @@
            // alert(mousePos.x);
             if(mousePos!=null) {
                // alert(mousePos.x);
-                this.offsetX = mousePos.x - this.x;
-                this.offsetY = mousePos.y - this.y;
+                dragOffsetX = mousePos.x - this.x;
+                dragOffsetY = mousePos.y - this.y;
+                showDebug("NO::"+this.x);
             }
             // alert("CHOOSED:",this.x);
             //TODO drag start here
@@ -591,13 +602,14 @@
             if (!this._state!=STATE.dragging) {
                 //this.dragging = true;
                 this._state=STATE.dragging;
+                //showDebug("NO::"+mousePos.x);
                 // var test=this.getWidth();
                 //this.setWidth(test+=10);
             }
             if (!this._editable) {
                 this.setEditable(true);
             }
-            console.log("OFFSET::::", this.offsetX, this.offsetY);
+            //console.log("OFFSET::::", this.offsetX, this.offsetY);
             // }
             var selectFariyEvent =new CustomEvent("SELECT_A_FARIY",{'detail':this});
             this.dispatchEvent(selectFariyEvent,this);
@@ -621,9 +633,13 @@
         {
             if(this._state==STATE.dragging&&mousePos!=null)
             {
-                 this.x=mousePos.x
-                 this.y=mousePos.y
+                //showDebug(dragOffsetX);
+                 this.x = mousePos.x //- dragOffsetX;
+                 this.y = mousePos.y //-dragOffsetY;
+
             }
+
+            showDebug(dragOffsetX);
 
         }
 
