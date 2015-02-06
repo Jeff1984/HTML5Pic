@@ -89,7 +89,7 @@
            // }
             document.getElementById("parm").innerHTML=params.mode;
             //
-            stage = new Q.Stage({width:600, height:800,y:25,x:10,
+            stage = new Q.Stage({width:600, height:800,x:10,
                 style: {
                     position: "absolute",
                 },
@@ -293,7 +293,7 @@
                     //dragOffsetX=mousePos.x-selectedTarget.x;
                     //dragOffsetY=mousePos.y-selectedTarget.y;
 
-                    showDebug(dragOffsetX);
+                    //showDebug(dragOffsetX);
                 }
 
                 //console.log(selectedTarget.getWidth(),AnchorRota.x);
@@ -650,16 +650,16 @@
     <body>
         <!--<div id="details"></div>
         <div id="progress"></div>-->
-        <div id="container"/>
+        <div id="container"></div>
 
-        <div  style="z-index: 0">
+        <div id="buttonContainer" style="top:810px; left:0px; position:absolute" >
                 <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
-                <input type="button" onclick="combinePic1()" value="花花" />
-                <input type="button" onclick="combinePic2()" value="天使" />
-                <input type="button" onclick="combinePic3()" value="喵喵" />
-                <input type="button" onclick="combinePic4()" value="铁骑士" />
-                <input type="button" onclick="combinePic5()" value="奥可" />
-                <input type="button" onclick="copyCanvas()" value="CopyCanvas" />
+                <input type="button" onclick="combinePic1()" value="花花" style="height:80px"/>
+                <input type="button" onclick="combinePic2()" value="天使"  style="height:80px"/>
+                <input type="button" onclick="combinePic3()" value="喵喵"  style="height:80px"/>
+                <input type="button" onclick="combinePic4()" value="铁骑士"  style="height:80px"/>
+                <input type="button" onclick="combinePic5()" value="奥可"  style="height:80px"/>
+                <input type="button" onclick="copyCanvas()" value="CopyCanvas"  style="height:80px"/>
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                  <label id="parm">12222</label>
                  <label for="fileToUpload">Take or select photo(s)1.0.10</label>
