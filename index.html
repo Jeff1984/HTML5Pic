@@ -379,8 +379,6 @@
             }
         }
 
-
-
          //files related
         function fileSelected() {
 
@@ -406,6 +404,11 @@
                 document.getElementById('details').innerHTML += '<p>';*/
 
             }
+        }
+
+        function copyEditedFairy()
+        {
+
         }
 
         function addImageToCanvas(_targetCanvas,file)
@@ -456,7 +459,7 @@
                  }*/
                 //===================================
                 ctx.save();
-                if(org==PORT){
+                if(org==LAND){
 
                     img.width=imageH;
                     img.height=imageW;
@@ -468,11 +471,11 @@
                     //showDebug(imageH);
                 }else
                 {
-                    img.width=imageH;
-                    img.height=imageW;
+                    img.width=imageW;
+                    img.height=imageH;
                     //ctx.translate(img.width,0);
 
-                    ctx.drawImage(img,0,0,imageH,imageW);
+                    ctx.drawImage(img,0,0,imageW,imageH);
 
                 }
                 ctx.restore();
@@ -484,6 +487,7 @@
             //copy image pic to back, copy visible==true fairy to canvas and rotate it
             var copy= Q.getDOM("copyC");
             addImageToCanvas(copy,selectedFile);
+            copyEditedFairy();
         }
 
         function loadFileToNewCanvas(file)
@@ -496,10 +500,93 @@
             document.getElementById("parm").innerHTML=Str;//mousePos.x+"::"+mousePos.y
         }
 
-    //editableImage
+        //TODO
+
+        function dataURLtoBlob(dataURL)
+        {
+            var byteString;
+            if(dataURL.split(',')[0].indexOf('base64')>=0)
+                byteString=atob(dataURL.split(',')[1]);
+            else
+                byteString=unescape(dataURL.split(',')[1]);
+
+            var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
+
+            var ia=new Uint8Array(byteString.length);
+            for(var i=0;i<byteString.length;i++){
+                ia[i]=byteString.charCodeAt(i);
+            }
+            return new Blob([ia],{type:mimeString});
+        }
+
+        function uploadFile() {
+
+            var canvas = document.getElementById("copyC");
+            var dataURL=canvas.toDataURL("image/png");
+            var blob=dataURLtoBlob(dataURL);
+            var file=new File(blob,"ss.png");
+            var fd=new FormData(document.forms[1]);
+            fd.append("myFile",file)
+
+            var xhr = new XMLHttpRequest();
+
+            xhr.upload.addEventListener("progress", uploadProgress, false);
+
+            xhr.addEventListener("load", uploadComplete, false);
+
+            xhr.addEventListener("error", uploadFailed, false);
+
+            xhr.addEventListener("abort", uploadCanceled, false);
+
+            xhr.open("POST", "savetofile.php");
+
+            xhr.send(fd);
+
+        }
+
+        function uploadProgress(evt) {
+
+            if (evt.lengthComputable) {
+
+                var percentComplete = Math.round(evt.loaded * 100 / evt.total);
+
+                document.getElementById('progress').innerHTML = percentComplete.toString() + '%';
+
+            }
+
+            else {
+
+                document.getElementById('progress').innerHTML = 'unable to compute';
+
+            }
+
+        }
+
+        function uploadComplete(evt) {
+
+            /* This event is raised when the server send back a response */
+
+            alert(evt.target.responseText);
+
+        }
+
+        function uploadFailed(evt) {
+
+            alert("There was an error attempting to upload the file.");
+
+        }
+
+        function uploadCanceled(evt) {
+
+            alert("The upload has been canceled by the user or the browser dropped the connection.");
+
+        }
+
+        //editableImage======================================================================================================================================================================================================
         /**
          * Created by zhangchi on 2015/1/15.
          */
+        //===================================================================================================================================================================================================================
         const STATE={
             editing:"editing",
             dragging:"dragging",
