@@ -531,9 +531,8 @@
             var canvas = document.getElementById("copyC");
             var dataURL=canvas.toDataURL("image/png");
             var blob=dataURLtoBlob(dataURL);
-            var file=new File(blob,"ss.png");
             var fd=new FormData(document.forms[1]);
-            fd.append("myFile",file)
+            fd.append("myFile",blob);
 
             var xhr = new XMLHttpRequest();
 
