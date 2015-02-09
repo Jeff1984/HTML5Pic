@@ -15,6 +15,7 @@
 <img id="rotate" src="rotate.png" style="display:none;" />-->
     <title>Take or select photo(s) and upload</title>
 	<script src="quark.base-1.0.0.js"></script>
+    <script src="exif.js"></script>
     <!--<script src="editableImage.js"></script>-->
 
     <script type="text/javascript">
@@ -62,6 +63,8 @@
             {
                 org=PORT;
                 document.getElementById("orientation").innerHTML="PORT";
+
+                showDebug(window.orientation);
             }
         }
         function init(){
@@ -77,12 +80,13 @@
             //if(params.mode == 1)
             //{
             try {
-                canvas = Q.createDOM("canvas", {width: 600, height: 800,style: {
+                canvas= Q.getDOM("testC");
+                /*canvas = Q.createDOM("canvas", {width: 600, height: 800,style: {
                     position: "absolute",
                     backgroundColor: "#000"
                 }});
 
-                container.appendChild(canvas);
+                container.appendChild(canvas);*/
 
                /* if(DEBUG) {
                     canvasCopy= Q.createDOM("canvas", {width: 600, height: 800,style: {
@@ -92,7 +96,7 @@
                     }});
                     container.appendChild(canvasCopy);
                 }*/
-
+                //alert(container);
                 var canvasContext = new Q.CanvasContext({canvas: canvas});
 
                 ///}else
@@ -136,13 +140,6 @@
             //init listener
             container.addEventListener(events[1], draw, false);
             container.addEventListener(events[2], end, false);
-
-           /* container.addEventListener(events[1], function(evt) {
-                mousePos = getMousePos(container, evt);
-                repoAnchorToImage();
-                var message = 'Mouse position: ' + mousePos.x + ',' + mousePos.y;
-                //console.log( message);
-            });*/
         }
 
         function draw(e) {
@@ -212,8 +209,6 @@
                         }
                     }
                 },false);
-
-
             }
             AnchorRota= new Q.Button({id:"btn2", image:e.images.rotate.image, regX:60,regY:60, width:120, height:120,
                 up:{rect:[0,120,120,120]}});
@@ -384,36 +379,12 @@
             }
         }
 
-        function copyCanvas(evt)
-        {
-            //copy image pic to back, copy visible==true fairy to canvas and rotate it
-            var ctx=canvasCopy.getContext("2d");
-            var img=new Image();
-            img.src=window.URL.createObjectURL(selectedFile);
-            img.onload=function(){
 
-
-                ctx.clearRect(0,0,800,600);
-                if(img.height>MAX_HEIGHT)
-                {
-                    img.height=MAX_HEIGHT;
-                }
-                if(img.width>MAX_WIDTH)
-                {
-                    img.width=MAX_WIDTH;
-                }
-                canvasCopy.width=MAX_WIDTH;
-                canvasCopy.height=MAX_HEIGHT;
-                ctx.drawImage(img,0,0,img.width,img.height);
-            }
-        }
 
          //files related
         function fileSelected() {
 
             var count = document.getElementById('fileToUpload').files.length;
-
-           // document.getElementById('details').innerHTML = "";
 
             for (var index = 0; index < count; index ++)
 
@@ -437,12 +408,18 @@
             }
         }
 
-        function loadFileToNewCanvas(file)
+        function addImageToCanvas(_targetCanvas,file)
         {
-            var ctx=canvas.getContext("2d");
+            var ctx=_targetCanvas.getContext("2d");
             var img=new Image();
             selectedFile=file;
             img.src=window.URL.createObjectURL(file);
+            /*var base64 = img.src.replace(/^.*?,/,'');
+             var binary = window.atob(base64);
+             var binaryData = new BinaryFile(binary);
+             var exif=EXIF.readFromBinaryFile(binaryData);*/
+            var imageH,imageW;
+            ctx.restore();
             img.onload=function(){
                 ctx.clearRect(0,0,800,600);
                 //alert(org);
@@ -450,26 +427,68 @@
                 //test
                 if(img.height>MAX_HEIGHT)
                 {
-                    img.height=MAX_HEIGHT;
+                    imageH=MAX_HEIGHT;
+                }else{
+                    imageH=img.height
                 }
                 if(img.width>MAX_WIDTH)
                 {
-                    img.width=MAX_WIDTH;
+                    imageW=MAX_WIDTH;
+                }else{
+                    imageW=img.width
                 }
                 //canvas.width=MAX_WIDTH;
                 //canvas.height=MAX_HEIGHT;
+                //==============================EXIF
+                /*var orientation = exif ? exif.Orientation  : 1;
+                 alert(orientation);
+                 // 判断拍照设备持有方向调整照片角度
+                 switch(orientation) {
+                 case 3:
+                 //imgRotation = 180;
+                 break;
+                 case 6:
+                 //imgRotation = 90;
+                 break;
+                 case 8:
+                 //imgRotation = 270;
+                 break;
+                 }*/
+                //===================================
+                ctx.save();
                 if(org==PORT){
-                    ctx.translate(img.width,0);
-                    ctx.rotate(Math.PI/2);
-                    ctx.drawImage(img,0,0,img.width,img.height);
 
+                    img.width=imageH;
+                    img.height=imageW;
+
+                    ctx.translate(imageW,0);
+                    ctx.rotate(Math.PI/2);
+
+                    ctx.drawImage(img,0,0,imageH,imageW);
+                    //showDebug(imageH);
                 }else
                 {
-                    ctx.drawImage(img,0,0,img.height,img.width);
+                    img.width=imageH;
+                    img.height=imageW;
+                    //ctx.translate(img.width,0);
+
+                    ctx.drawImage(img,0,0,imageH,imageW);
+
                 }
-               // ctx.drawImage(img,0,0,img.width,img.height);
                 ctx.restore();
             }
+        }
+
+        function copyCanvas(evt)
+        {
+            //copy image pic to back, copy visible==true fairy to canvas and rotate it
+            var copy= Q.getDOM("copyC");
+            addImageToCanvas(copy,selectedFile);
+        }
+
+        function loadFileToNewCanvas(file)
+        {
+            addImageToCanvas(canvas,file);
         }
 
         function showDebug(Str)
@@ -609,7 +628,7 @@
                // alert(mousePos.x);
                 dragOffsetX = mousePos.x - this.x;
                 dragOffsetY = mousePos.y - this.y;
-                showDebug("NO::"+this.x);
+                //showDebug("NO::"+this.x);
             }
             // alert("CHOOSED:",this.x);
             //TODO drag start here
@@ -656,7 +675,7 @@
 
             }
 
-            showDebug(dragOffsetX);
+            //showDebug(dragOffsetX);
 
         }
 
@@ -665,7 +684,10 @@
 </head>
  
     <body>
-        <div id="container"></div>
+        <div id="container">
+            <canvas id="testC" width="600" height="800" style="background-color: rgb(0, 0, 0)"></canvas>
+            <canvas id="copyC" width="600" height="800" style="background-color: rgb(0, 0, 0)"></canvas>
+        </div>
 
         <div id="buttonContainer" style="top:810px; left:0px; position:absolute" >
                 <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
