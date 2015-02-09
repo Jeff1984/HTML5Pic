@@ -5,14 +5,6 @@
 <head>
 
 <meta http-equiv="content-type" content="text/html" charset="utf-8"/>
-<!-- id="HH" src="1.png" style="display:none"/>
-<img id="TS" src="2.png" style="display:none"/>
-<img id="MM" src="3.png" style="display:none"/>
-<img id="TQS" src="4.png" style="display:none"/>
-<img id="AK" src="5.png" style="display:none"/>
-
-<img id="scale" src="scale.png" style="display:none;" />
-<img id="rotate" src="rotate.png" style="display:none;" />-->
     <title>Take or select photo(s) and upload</title>
 	<script src="quark.base-1.0.0.js"></script>
     <script src="exif.js"></script>
@@ -117,14 +109,9 @@
                 context:domContext, update:function()
             {
                 //write your own update code here
-                //document.getElementById("parm").innerHTML="for";
-
             }});
 
-            //alert(stage.y);
-
             var loader = new Quark.ImageLoader();
-            //loader.addEventListener("loaded", onLoad);
             loader.addEventListener("complete", onComplete);
             loader.load([{id:"HH", src:"1.png"}, {id:"TS", src:"2.png"},{id:"MM", src:"3.png"},{id:"TQS", src:"4.png"},{id:"AK", src:"5.png"},{id:"scale", src:"scale.png"},{id:"rotate", src:"rotate.png"}]);
             var fps = 60;
@@ -153,15 +140,12 @@
             {
                 mousePos = {x: e.touches[0].clientX- rect.left, y: e.touches[0].clientY- rect.top};
             }
-            //document.getElementById("parm").innerHTML=mousePos.x+"::"+mousePos.y
-           // console.log( mousePos.x,mousePos.y);
             repoAnchorToImage();
 
         }
 
         function end(e) {
             e.preventDefault();
-            //alert("out");
             // Terminate touch path
             mousePos=null;
             repoAnchorToImage();
@@ -170,15 +154,11 @@
         function onComplete(e)
         {
             imageDics=e.images;
-            //alert(imageDics);
-
             var im,origChildId;
             for(var i=0;i<5;i++)
             {
-
                 im=new editableImage(getFairy(i),{id:"edit",x:0,y:0,autoSize:true});
                 im.name=getFairy(i);
-                //alert(im.name);
 
                 stage.addChild(im);
                 //console.log("index is:",stage.getChildIndex(im));
@@ -264,21 +244,15 @@
 
                 }else if(selectedTarget.getState()==STATE.rotating)
                 {
-                    //var dx=mousePos.x-selectedTarget.getWidth()-selectedTarget.x//-selectedTarget.getWidth();
-                    //var dy=mousePos.y-selectedTarget.y;
                     var dx=mousePos.x-selectedTarget.x;
                     var dy=mousePos.y-selectedTarget.y;
-
                     //just for test
                     var r=Math.atan2(dy,dx)*180/Math.PI+45;
 
                     selectedTarget.rotation=r;
                     AnchorRota.x = mousePos.x;
                     AnchorRota.y = mousePos.y;
-                    //console.log(mousePos.x,mousePos.y,selectedTarget.x,selectedTarget.y,"dd::",dy,dx,r,Math.tan(r));
 
-                    //AnchorScale.x = selectedTarget.x + (selectedTarget.getWidth())*Math.cos(r/180*Math.PI);
-                    //AnchorScale.y = selectedTarget.y + (selectedTarget.getHeight())*Math.sin(r/180*Math.PI);
                 }else
                 {
                     AnchorRota.x = selectedTarget.x + halfWidth;
@@ -286,14 +260,8 @@
 
                    AnchorScale.x = selectedTarget.x +halfWidth;
                    AnchorScale.y = selectedTarget.y +halfHeight;
-
-                    //dragOffsetX=mousePos.x-selectedTarget.x;
-                    //dragOffsetY=mousePos.y-selectedTarget.y;
-
-                    //showDebug(dragOffsetX);
                 }
 
-                //console.log(selectedTarget.getWidth(),AnchorRota.x);
             }
         }
 
@@ -408,7 +376,14 @@
 
         function copyEditedFairy()
         {
-
+            var i;
+            for(i=0;i<editArr.length;i++)
+            {
+                //if(editArr[i].name!=e.detail.name)
+                //{
+                   // editArr[i].setState(STATE.none);
+                //}
+            }
         }
 
         function addImageToCanvas(_targetCanvas,file)
@@ -500,7 +475,16 @@
             document.getElementById("parm").innerHTML=Str;//mousePos.x+"::"+mousePos.y
         }
 
-        //TODO
+        /*
+        1st check each fairy state
+        */
+        function checkFairyState()
+        {
+
+        }
+
+
+        //TODO draw fairy to canvas and upload it
 
         function dataURLtoBlob(dataURL)
         {
@@ -611,18 +595,11 @@
         editableImage.prototype.init=function()
         {
             this._image=new Q.Bitmap({id:"head", image:imageDics[this.srcName].image, x:0, y:0});
-            //alert(events[0],this._image);
-            //this.dragging=false;
             this.eventChildren=false;
             this.addChild(this._image)
-            //gS.addEventListener(events[0],this.scaleImage);
-            //gR.addEventListener(events[0],this.rotationImage);
             this.addEventListener(events[0], this.startDrag,false);
             this.addEventListener(events[2], this.stopDrag,false);
 
-            //alert(events[0],this._image);
-
-            //this.gS.visible=this.gR.visible=false;
             this._state=STATE.none;
 
             this._image.x=this.regX=this._image.regX=this._image.width>>1;
@@ -695,32 +672,13 @@
             }
         }
 
-        editableImage.prototype.scaleImage = function(){
-            console.log("scaling");
-            //self.scaleX-=0.1;
-        }
-
-        editableImage.prototype.rotationImage = function(){
-            console.log("rotation");
-            //this.rotation+=0.5;
-            //self.scaleX-=0.1;
-        }
-
-
         editableImage.prototype.startDrag = function(e)
         {
-           // alert(this.x);
-           // alert(mousePos.x);
             if(mousePos!=null) {
-               // alert(mousePos.x);
                 dragOffsetX = mousePos.x - this.x;
                 dragOffsetY = mousePos.y - this.y;
-                //showDebug("NO::"+this.x);
             }
-            // alert("CHOOSED:",this.x);
             //TODO drag start here
-            //console.log("HIIITTT ROTATION::", Q.hitTestPoint(this.gR,mousePos.x,mousePos.y),"HIIITTT SCALING::",Q.hitTestPoint(this.gS,mousePos.x,mousePos.y));
-
             //this.eventChildren=false;
             if (!this._state!=STATE.dragging) {
                 //this.dragging = true;
@@ -742,30 +700,20 @@
         editableImage.prototype.stopDrag = function(e)
         {
             e.preventDefault();
-            //this.eventChildren=false;
             if(this._state==STATE.dragging)
             {
                 this._state=STATE.none;
             }
-            //this.visible=false;
-            //alert("UP");
-            // console.log("THIS IS:",self.x+(self.offsetX),self.y+(self.offsetY))
         };
 
         editableImage.prototype.update = function()
         {
             if(this._state==STATE.dragging&&mousePos!=null)
             {
-                //showDebug(dragOffsetX);
                  this.x = mousePos.x //- dragOffsetX;
                  this.y = mousePos.y //-dragOffsetY;
-
             }
-
-            //showDebug(dragOffsetX);
-
         }
-
 
     </script>
 </head>
@@ -783,13 +731,13 @@
                 <input type="button" onclick="combinePic3()" value="喵喵精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic4()" value="铁骑士精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic5()" value="奥可精灵"  style="height:80px"/>
-                <input type="button" onclick="copyCanvas()" value="CopyCanvas"  style="height:80px"/>
+                <input type="button" onclick="copyCanvas()" value="CopyAndUpload"  style="height:80px"/>
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                  <label id="parm">12222</label>
                   <label id="orientation">no way<label/>
-                 <label for="fileToUpload">Take or select photo(s)1.0.10</label>
+                 <label for="fileToUpload">Take or select photo(s)1.0.11</label>
         </div>
-     <!-- </form>-->
+        <div id="progress"></div>
 
     </body>
  
