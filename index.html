@@ -376,14 +376,37 @@
 
         function copyEditedFairy()
         {
-            var i;
+            var i,toAddedImage,tempImage;
+            console.log("start coping...");
             for(i=0;i<editArr.length;i++)
             {
                 //if(editArr[i].name!=e.detail.name)
                 //{
                    // editArr[i].setState(STATE.none);
                 //}
+                toAddedImage=editArr[i];
+                if(toAddedImage.visible==false)
+                {
+                    continue;
+                }
+                tempImage=imageDics[toAddedImage.name].image;
+                copyTempImageToCopyCanvas(tempImage,toAddedImage.x,toAddedImage.y,toAddedImage.getWidth(),toAddedImage.getHeight(),toAddedImage.rotation);
+                //console.log(i,toAddedImage.name,toAddedImage.rotation);
+                //console.log(i,toAddedImage.name,toAddedImage.width,toAddedImage.height,toAddedImage.x,toAddedImage.y);
             }
+
+          //  uploadFile();
+        }
+
+        function copyTempImageToCopyCanvas(_tempImage,x,y,width,height,rot)
+        {
+            var ctx=Q.getDOM("copyC").getContext("2d");
+            //ctx.save();
+            ctx.translate(x-Math.abs(Math.sin(rot*Math.PI/180)*width/2),y-Math.abs(Math.cos(rot*Math.PI/180)*height/2));
+            ctx.rotate(rot*Math.PI/180);
+            //console.log(rot,rot*Math.PI/180);
+            ctx.drawImage(_tempImage,0,0,width,height);
+            ctx.restore();
         }
 
         function addImageToCanvas(_targetCanvas,file)
@@ -461,7 +484,11 @@
         {
             //copy image pic to back, copy visible==true fairy to canvas and rotate it
             var copy= Q.getDOM("copyC");
-            addImageToCanvas(copy,selectedFile);
+            copy.getContext("2d").restore();
+            copy.getContext("2d").save();
+            copy.getContext("2d").clearRect(0,0,800,600);
+            if(selectedFile)
+                addImageToCanvas(copy,selectedFile);
             copyEditedFairy();
         }
 
@@ -478,10 +505,6 @@
         /*
         1st check each fairy state
         */
-        function checkFairyState()
-        {
-
-        }
 
 
         //TODO draw fairy to canvas and upload it
@@ -731,7 +754,8 @@
                 <input type="button" onclick="combinePic3()" value="喵喵精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic4()" value="铁骑士精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic5()" value="奥可精灵"  style="height:80px"/>
-                <input type="button" onclick="copyCanvas()" value="CopyAndUpload"  style="height:80px"/>
+                <input type="button" onclick="copyCanvas()" value="Copy"  style="height:80px"/>
+                 <input type="button" onclick="uploadFile()" value="Upload"  style="height:80px"/>
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                  <label id="parm">12222</label>
                   <label id="orientation">no way<label/>
