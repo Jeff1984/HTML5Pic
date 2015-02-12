@@ -1,0 +1,5 @@
+/bin-debug
+/target
+/frameworks
+localscripts.properties
+*.png

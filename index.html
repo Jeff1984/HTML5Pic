@@ -5,7 +5,7 @@
 <head>
 
 <meta http-equiv="content-type" content="text/html" charset="utf-8"/>
-    <title>Take or select photo(s) and upload</title>
+    <title>1.0Take or select photo(s) and upload</title>
 	<script src="quark.base-1.0.0.js"></script>
     <script src="jpeg_encoder_basic.js"></script>
     <!--<script src="editableImage.js"></script>-->
@@ -36,7 +36,7 @@
 
         var AnchorRota,AnchorScale,selectedFile;
 
-        const DEBUG=true;
+        const DEBUG=true,useDataToUrlModel=false;
 
         var startRtateX,startRotateY,dragOffsetX,dragOffsetY;
         //document.getElementById("parm").innerHTML="Notinit";
@@ -583,16 +583,17 @@
 
             var testImage=canvas.toDataURL("image/jpg").replace("image/png","image/octet-steam");
            // window.location.href = testImage;
-            //var blob=dataURLtoBlob(dataURL);
+            alert(dataURL);
+            var blob=dataURLtoBlob(dataURL);
             //var blob=dataToBlob(data);
-            alert("IA::");
+
             if(dataURL==null)
             {
                 alert("NO data");
             }
             var fd=new FormData(document.forms[1]);
             var file = document.getElementById('fileToUpload').files[0];
-            fd.append("myFile",file);
+            fd.append("myFile",blob);
 
             var xhr = new XMLHttpRequest();
 
@@ -811,7 +812,7 @@
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                 <label id="parm">12222</label>
                 <label id="orientation">no way<label/>
-                <label for="fileToUpload">Take or select photo(s)1.0.11</label>
+                <label for="fileToUpload">1.0Take or select photo(s)1.0.11</label>
         </div>
         <div id="progress"></div>
 
