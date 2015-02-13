@@ -61,17 +61,13 @@
         }
         function init(){
 
-            //canvas.id="picture";
-           // if(DEBUG)
-                //alert("init");
+
             container = Q.getDOM("container");
 
             params = Quark.getUrlParams();
             if(params.mode == undefined) params.mode = 2;
 
-            //alert(document.getElementById('fileToUpload'));
-            //if(params.mode == 1)
-            //{
+
             try {
                 canvas= Q.getDOM("testC");
 
@@ -82,42 +78,21 @@
                 {
                     showDebug("SUPPORT CANVAS")
                 }
-                /*canvas = Q.createDOM("canvas", {width: 600, height: 800,style: {
-                    position: "absolute",
-                    backgroundColor: "#000"
-                }});
 
-                container.appendChild(canvas);*/
-
-               /* if(DEBUG) {
-                    canvasCopy= Q.createDOM("canvas", {width: 600, height: 800,style: {
-                        position: "absolute",
-                        left:"615px",
-                        backgroundColor: "#0ee"
-                    }});
-                    container.appendChild(canvasCopy);
-                }*/
-                //alert(container);
                 var canvasContext = new Q.CanvasContext({canvas: canvas});
 
-                ///}else
-                //{
                 domContext = new Quark.DOMContext({canvas: container});
-                //alert(canvas);
             }catch (e)
             {
                 alert(e);
             }
-           // }
-            //document.getElementById("parm").innerHTML=params.mode;
-            //
+
             stage = new Q.Stage({width:600, height:800,x:10,
                 style: {
                     position: "absolute",
                 },
                 context:domContext, update:function()
             {
-                //write your own update code here
             }});
 
             var loader = new Quark.ImageLoader();
@@ -436,7 +411,7 @@
              var exif=EXIF.readFromBinaryFile(binaryData);*/
 
             img.onload=function(){
-                ctx.clearRect(0,0,800,600);
+                ctx.clearRect(0,0,600,800);
                 selectedBgImage=img;
 
                 //test
@@ -488,6 +463,26 @@
             }
         }
 
+        function drawDataToCanvas(blob)
+        {
+            var ctx=canvas.getContext("2d");
+            //alert(_targetCanvas);
+            var img=new Image();
+            //QQ browser support it
+            img.src=window.webkitURL.createObjectURL(blob);
+
+            img.onload=function(){
+                ctx.clearRect(0,0,600,800);
+                ctx.save();
+
+                    img.width=600;
+                    img.height=800;
+                    ctx.drawImage(img,0,0,600,800);
+                    ctx.drawImage(img,0,0,600,800);
+                ctx.restore();
+            }
+        }
+
         function copyCanvas(evt)
         {
             if(selectedTarget)
@@ -500,7 +495,7 @@
                 var ctx = copy.getContext("2d");
                 //var imageH, imageW;
                 ctx.save();
-                ctx.clearRect(0, 0, 800,600);
+                ctx.clearRect(0, 0, 600,800);
                 /*if(selectedBgImage.height> MAX_HEIGHT)
                 {
                     imageH=MAX_HEIGHT;
@@ -545,22 +540,22 @@
         */
         //TODO draw fairy to canvas and upload it
 
-        function dataURLtoBlob(dataURL)
-        {
+        function dataURLtoBlob(dataURL) {
             var byteString;
-            if(dataURL.split(',')[0].indexOf('base64')>=0)
-                byteString=atob(dataURL.split(',')[1]);
-            else
-                byteString=unescape(dataURL.split(',')[1]);
+            if (dataURL.split(',')[0].indexOf('base64') >= 0) {
+                byteString = atob(dataURL.split(',')[1]);
+                console.log(byteString)
+            }
+            else {
+                byteString = unescape(dataURL.split(',')[1]);
+            }
 
             var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
-
             var ab=new ArrayBuffer(byteString.length);
             var ia=new Uint8Array(byteString.length);
             for(var i=0;i<byteString.length;i++){
                 ia[i]=byteString.charCodeAt(i);
             }
-
             var _blob;
             try{
                 _blob=new Blob([ia],{type:mimeString});
@@ -572,14 +567,20 @@
                         window.MSBlobBuilder;
                 if(e.name == 'TypeError' && window.BlobBuilder){
 
+                    const TESTTXT=false;
                     var bb = new BlobBuilder();
-                    bb.append(ia.buffer);
-                    _blob = bb.getBlob(mimeString);
+                    if(TESTTXT){
+                        bb.append("THIS is test");
+                        _blob = bb.getBlob("text/plain");
+                       // alert(_blob.type);
+                    }else {
 
-                    alert(_blob.size);
-                   // var dv=new DataView(ia.buffer);
-                    //_blob = new Blob([dv],{type:mimeString});
+                        bb.append(ia.buffer);
+                        _blob = bb.getBlob("image/png");
+                        //just a test
 
+                        drawDataToCanvas(_blob);
+                    }
                 }
                 else if(e.name == "InvalidStateError"){
                     // InvalidStateError (tested on FF13 WinXP)
@@ -594,41 +595,79 @@
 
         function dataToBlob(data)
         {
+            //alert(data);
             var ia=new Uint8Array(data.length);
             for(var i=0;i<data.length;i++){
                 //console.log(data[i].length);
                 ia[i]=data[i].charCodeAt(0);
             }
            // alert(ia.toString());
-            return new Blob([ia],{type:'image/jpeg'});
-        }
+           // return new Blob([ia],{type:'image/jpeg'});
+            var _blob;
+            try{
+                _blob=new Blob([ia],{type:"image/jpg"});
+            }catch(e)
+            {
+                window.BlobBuilder = window.BlobBuilder ||
+                        window.WebKitBlobBuilder ||
+                        window.MozBlobBuilder ||
+                        window.MSBlobBuilder;
+                if(e.name == 'TypeError' && window.BlobBuilder){
 
-        function testBlob()
-        {
-            var bb=new MSBlobBuilder();
-            bb.append("HELLO");
-            var blob=bb.getBlob("text/plain");
+                    const TESTTXT=true;
+                    var bb = new BlobBuilder();
+                    if(TESTTXT){
+                        bb.append("THIS is test");
+                        _blob = bb.getBlob("text/plain");
+                        // alert(_blob.type);
+                    }else {
 
+                        bb.append(ia);
+                        _blob = bb.getBlob("image/jpg");
+                        //just a test
+
+                        drawDataToCanvas(_blob);
+                    }
+                }
+                else if(e.name == "InvalidStateError"){
+                    // InvalidStateError (tested on FF13 WinXP)
+                    _blob = new Blob(ia, {type :"image/jpeg"});
+                }
+                else{
+                    // We're screwed, blob constructor unsupported entirely
+                }
+            }
+            return _blob;
         }
 
         function uploadFile() {
             var canvas = document.getElementById("copyC");
-            var dataURL = canvas.toDataURL("image/jpeg")//.replace("image/png", "image/octet-steam");
-
+            var dataURL = canvas.toDataURL("image/jpeg").replace("image/png");
             var blob;
             if (useDataToUrlModel) {
                 var encoder = new JPEGEncoder();
                 var data = encoder.encode(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height), 100);
 
-                var testImage = canvas.toDataURL("image/jpeg").replace("image/png", "image/octet-steam");
+                //var testImage = canvas.toDataURL("image/jpeg").replace("image/png", "image/octet-steam");
                 blob=dataToBlob(data);
             } else {
                 blob = dataURLtoBlob(dataURL);
             }
 
             var fd=new FormData(document.forms[1]);
-            var file = document.getElementById('fileToUpload').files[0];
-            fd.append("myFile",blob,"file");
+            //alert(blob.size);
+            //var file = document.getElementById('fileToUpload').files[0];
+            //fd.append("myFile",blob,"file");
+           // var count = document.getElementById('fileToUpload').files.length;
+            //for (var index = 0; index < count; index ++)
+
+            //{
+
+                //var file = document.getElementById('fileToUpload').files[index];
+                //fd.append('fname', 'test.txt');
+                fd.append('myFile', blob);
+
+            //}
             //===================================================
             var xhr = new XMLHttpRequest();
 
@@ -640,10 +679,8 @@
 
             xhr.addEventListener("abort", uploadCanceled, false);
 
-            xhr.open("POST", "savetofile.php");
-
+            xhr.open("POST", "savetofile.php",true);
             xhr.send(fd);
-
         }
 
         function uploadProgress(evt) {
@@ -653,6 +690,8 @@
                 var percentComplete = Math.round(evt.loaded * 100 / evt.total);
 
                 document.getElementById('orientation').innerHTML = percentComplete.toString() + '%';
+
+                //alert(evt.loaded);
 
             }
 
@@ -697,7 +736,6 @@
         }
         var editableImage = function(name,props)
         {
-            //alert("BEFORE");
             this.srcName=name;
             this._scaleX=1;
             this._scaleY=1;
