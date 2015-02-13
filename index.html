@@ -5,10 +5,9 @@
 <head>
 
 <meta http-equiv="content-type" content="text/html" charset="utf-8"/>
-    <title>1.0Take or select photo(s) and upload</title>
+    <title>1.1Take or select photo(s) and upload</title>
 	<script src="quark.base-1.0.0.js"></script>
     <script src="jpeg_encoder_basic.js"></script>
-    <!--<script src="editableImage.js"></script>-->
 
     <script type="text/javascript">
 		//create a DOMContext
@@ -556,11 +555,41 @@
 
             var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
 
+            var ab=new ArrayBuffer(byteString.length);
             var ia=new Uint8Array(byteString.length);
             for(var i=0;i<byteString.length;i++){
                 ia[i]=byteString.charCodeAt(i);
             }
-            return new Blob([ia],{type:mimeString});
+
+            var _blob;
+            try{
+                _blob=new Blob([ia],{type:mimeString});
+            }catch(e)
+            {
+                window.BlobBuilder = window.BlobBuilder ||
+                        window.WebKitBlobBuilder ||
+                        window.MozBlobBuilder ||
+                        window.MSBlobBuilder;
+                if(e.name == 'TypeError' && window.BlobBuilder){
+
+                    var bb = new BlobBuilder();
+                    bb.append(ia.buffer);
+                    _blob = bb.getBlob(mimeString);
+
+                    alert(_blob.size);
+                   // var dv=new DataView(ia.buffer);
+                    //_blob = new Blob([dv],{type:mimeString});
+
+                }
+                else if(e.name == "InvalidStateError"){
+                    // InvalidStateError (tested on FF13 WinXP)
+                    _blob = new Blob(ia, {type :mimeString});
+                }
+                else{
+                    // We're screwed, blob constructor unsupported entirely
+                }
+            }
+            return _blob;
         }
 
         function dataToBlob(data)
@@ -571,30 +600,36 @@
                 ia[i]=data[i].charCodeAt(0);
             }
            // alert(ia.toString());
-            return new Blob([ia],{type:'image/jpg'});
+            return new Blob([ia],{type:'image/jpeg'});
+        }
+
+        function testBlob()
+        {
+            var bb=new MSBlobBuilder();
+            bb.append("HELLO");
+            var blob=bb.getBlob("text/plain");
+
         }
 
         function uploadFile() {
             var canvas = document.getElementById("copyC");
-            var dataURL=canvas.toDataURL("image/jpg");
+            var dataURL = canvas.toDataURL("image/jpeg")//.replace("image/png", "image/octet-steam");
 
-            var encoder=new JPEGEncoder();
-            var data=encoder.encode(canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height), 100);
+            var blob;
+            if (useDataToUrlModel) {
+                var encoder = new JPEGEncoder();
+                var data = encoder.encode(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height), 100);
 
-            var testImage=canvas.toDataURL("image/jpg").replace("image/png","image/octet-steam");
-           // window.location.href = testImage;
-            alert(dataURL);
-            var blob=dataURLtoBlob(dataURL);
-            //var blob=dataToBlob(data);
-
-            if(dataURL==null)
-            {
-                alert("NO data");
+                var testImage = canvas.toDataURL("image/jpeg").replace("image/png", "image/octet-steam");
+                blob=dataToBlob(data);
+            } else {
+                blob = dataURLtoBlob(dataURL);
             }
+
             var fd=new FormData(document.forms[1]);
             var file = document.getElementById('fileToUpload').files[0];
-            fd.append("myFile",blob);
-
+            fd.append("myFile",blob,"file");
+            //===================================================
             var xhr = new XMLHttpRequest();
 
             xhr.upload.addEventListener("progress", uploadProgress, false);
@@ -617,13 +652,13 @@
 
                 var percentComplete = Math.round(evt.loaded * 100 / evt.total);
 
-                document.getElementById('progress').innerHTML = percentComplete.toString() + '%';
+                document.getElementById('orientation').innerHTML = percentComplete.toString() + '%';
 
             }
 
             else {
 
-                document.getElementById('progress').innerHTML = 'unable to compute';
+                document.getElementById('orientation').innerHTML = 'unable to compute';
 
             }
 
@@ -632,7 +667,6 @@
         function uploadComplete(evt) {
 
             /* This event is raised when the server send back a response */
-
             alert(evt.target.responseText);
 
         }
@@ -800,8 +834,7 @@
             <canvas id="copyC" width="600" height="800" style="background-color: rgb(0, 0, 0)"></canvas>
         </div>
 
-        <div id="buttonContainer" style="top:810px; left:0px; position:absolute" >
-                <!--<input type="button" onclick="uploadFile()" value="Upload" />-->
+        <div id="buttonContainer" style="top:810px; left:0px; position:absolute">
                 <input type="button" onclick="combinePic1()" value="花花精灵" style="height:80px"/>
                 <input type="button" onclick="combinePic2()" value="天使精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic3()" value="喵喵精灵"  style="height:80px"/>
@@ -811,10 +844,12 @@
                 <input type="button" onclick="uploadFile()" value="Upload"  style="height:80px"/>
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                 <label id="parm">12222</label>
-                <label id="orientation">no way<label/>
+                <label id="orientation">no way</label>
                 <label for="fileToUpload">1.0Take or select photo(s)1.0.11</label>
         </div>
-        <div id="progress"></div>
+        <form method="post" accept-charset="utf-8" name="form1">
+            <input name="hidden_data" id='hidden_data' type="hidden"/>
+        </form>
 
     </body>
  
