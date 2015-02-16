@@ -29,7 +29,6 @@
         var stage;
         var canvas,canvasCopy;
         var editArr=[];
-        var testArr=[];
         var imageDics,selectedBgImage;
         var lastPt=null;
         var org;
@@ -552,13 +551,12 @@
             }
 
             var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
+            alert(mimeString);
             var ab=new ArrayBuffer(byteString.length);
             var ia=new Uint8Array(byteString.length);
             for(var i=0;i<byteString.length;i++){
                 ia[i]=byteString.charCodeAt(i);
             }
-
-            testArr=ia;
             var _blob;
             try{
                 _blob=new Blob([ia],{type:mimeString});
@@ -673,8 +671,7 @@
             //}
             //===================================================
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "test_upload.php",true);
-           // xhr.setRequestHeader('Content-Type',"image/jpeg")
+
             xhr.upload.addEventListener("progress", uploadProgress, false);
 
             xhr.addEventListener("load", uploadComplete, false);
@@ -683,14 +680,8 @@
 
             xhr.addEventListener("abort", uploadCanceled, false);
 
-            //xhr.open("POST", "savetofile.php",true);
-
-
-
-           // xhr.send(fd);
-            //xhr.send(fd);
-            xhr.send(testArr);
-
+            xhr.open("POST", "savetofile.php",true);
+            xhr.send(fd);
         }
 
         function uploadProgress(evt) {

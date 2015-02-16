@@ -1,0 +1,1 @@
+pscp.exe -P 22 upload2.html zhangchi@10.0.55.212:/var/www/ssh_test/php
