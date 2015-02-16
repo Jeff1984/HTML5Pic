@@ -2,36 +2,47 @@
 error_reporting(E_ALL);
 $dir = "./uploads/";
 $date = date('YmdHis');
-if (isset($_FILES['myFile'])) {
-  // Example:
-    if ($_FILES['myFile']['type'] == 'image/png' || $_FILES['myFile']['type'] == 'image/jpeg') {
+
+$input_data = file_get_contents('php://input');
+if (TRUE == empty($input_data))
+	echo 'empty input';
+$file_data = base64_decode($input_data);
+if (FALSE == $file_data)
+	echo "base64 decode failed";
+$tmpfname = tempnam("/tmp", "UPD");
+$handle = fopen($tmpfname, 'wb');
+flock($handle, LOCK_EX);
+fwrite($handle, $input_data);
+flock($handle, LOCK_UN);
+fclose($handle);
+
+$finfo = finfo_open(FILEINFO_MIME_TYPE);
+$file_type = finfo_file($finfo, $tmpfname);
+finfo_close($finfo);
+$file_size = filesize($tmpfname);
+
+    if ($file_type == 'image/png')
+	$extension = '.png';
+    elseif ($file_type == 'image/jpeg')
         $extension = '.jpg';
-    } else if ($_FILES['myFile']['type'] == 'text/plain'){
+    elseif ($file_type == 'text/plain')
         $extension = '.txt';
-    }
-    else if ($_FILES['myFile']['type'] == 'application/msword') {
+    elseif ($file_type == 'application/msword')
         $extension = '.doc';
-    }
-    else if ($_FILES['myFile']['type'] == 'application/vnd.msword.document.12') {
+    elseif ($file_type == 'application/vnd.msword.document.12')
         $extension = '.docx';
-    }
-    else if ($_FILES['myFile']['type'] == 'application/pdf') {
+    elseif ($file_type == 'application/pdf')
         $extension = '.pdf';
-    }	
-    else {
+    else
         $extension = '.jpg';
-    }
-    $destination = get_destination($dir, $date, $_FILES['myFile']['name'], $extension, $_FILES['myFile']['size']);
+    $destination = get_destination($dir, $date, basename($tmpfname), $extension, $file_size);
     echo $destination;
-    $xx = move_uploaded_file($_FILES['myFile']['tmp_name'], $destination);
+    $xx = rename($tmpfname, $destination);
     if ($xx) {
-        echo $destination . ' successful ' . $_FILES['myFile']['size'];
+        echo $destination . ' successful ' . $file_size;
     } else {
         echo 'move uploaded file failed';
     }
-} else {
-    echo 'upload failed';
-}
 
 function get_destination($dir, $date, $prefix, $extension, $size) {
     
@@ -68,18 +79,4 @@ function get_destination($dir, $date, $prefix, $extension, $size) {
         closedir($dh);
         return $dir . $prefix . "_" . $expect_postfix . $extension;
     }
-/**
-    $subdir = substr($date, 0, 8);
-    $suffix = md5($prefix . $size . mktime());
-    if (!is_dir($dir)) {
-        mkdir($dir);
-        mkdir($dir . $subdir . '/');
-    }
-    else if (!is_dir($dir . $subdir . '/')) {
-        mkdir($dir . $subdir . '/');
-    }
-
-    return $dir . $subdir . '/' . $prefix . '_' . $suffix . $extension;
-**/
 }
-?>

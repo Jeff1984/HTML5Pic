@@ -25,23 +25,30 @@
     </form>
 <script>
 
+    var testArr;
+    var urlEncode;
     function dataURLtoBlob(dataURL) {
         var byteString;
         if (dataURL.split(',')[0].indexOf('base64') >= 0) {
-            byteString = atob(dataURL.split(',')[1]);
+            byteString = dataURL.split(',')[1]//);
         }
         else {
-            byteString = unescape(dataURL.split(',')[1]);
+            alert("test");
+            byteString = dataURL.split(',')[1];
         }
-
+        urlEncode=byteString;
+        //alert(urlEncode);
+        //alert(byteString);
         var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
         var ab=new ArrayBuffer(byteString.length);
         var ia=new Uint8Array(byteString.length);
+
         for(var i=0;i<byteString.length;i++){
             ia[i]=byteString.charCodeAt(i);
         }
+
+        testArr=ia;
         const TESTTXT=true;
-        //alert(mimeString);
         var _blob;
         try{
             if(TESTTXT)
@@ -60,12 +67,11 @@
                     window.MSBlobBuilder;
             if(e.name == 'TypeError' && window.BlobBuilder){
 
-
                 var bb = new BlobBuilder();
                 if(TESTTXT){
                     bb.append(["THIS is test"]);
                     _blob = bb.getBlob("text/plain");
-                     alert(_blob.type);
+                     //alert(_blob.type);
                 }else {
                     bb.append(ia.buffer);
 
@@ -82,7 +88,7 @@
                 // We're screwed, blob constructor unsupported entirely
             }
         }
-        alert(_blob.size)
+        //alert(_blob.size)
         return _blob;
     }
     function uploadComplete(evt) {
@@ -94,15 +100,17 @@
 
     function uploadEx() {
         var canvas = document.getElementById("canvas");
-        var dataURL = canvas.toDataURL("image/png");
+        var dataURL = canvas.toDataURL("image/jpg");
         //alert(dataURL);
         document.getElementById('hidden_data').value = dataURL;
         //var fd = new FormData(document.forms["form1"]);
         var fd=new FormData(document.forms[1]);
         var blob = dataURLtoBlob(dataURL);
+        //alert(blob.size);
         fd.append('myFile', blob);
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'savetofile.php', true);
+        xhr.setRequestHeader("Accept","text/xml");
         xhr.upload.onprogress = function(e) {
                     if (e.lengthComputable) {
                         var percentComplete = (e.loaded / e.total) * 100;
@@ -111,10 +119,45 @@
                         }
                     };
         xhr.addEventListener("load", uploadComplete, false);
-
+         xhr.onreadystatechange=function()
+         {
+             if(xhr.readyState==0)
+             {
+                 var str="init::"
+                 //alert(str);
+             }
+             else if(xhr.readyState==1)
+             {
+                 var str="set up::"
+                 //alert(str);
+             }
+             else if(xhr.readyState==2)
+             {
+                 var str="sent::"
+                 //alert(str);
+             }
+             else if(xhr.readyState==3)
+             {
+                 var str="in process::";
+                 //alert(str);
+             }
+             else if(xhr.readyState==4)
+             {
+                 var str="complete::"+xhr.responseText
+                 //alert(str);
+             }
+         }
         xhr.onload = function() {
                     };
-       xhr.send(fd);
+
+       /* var str="";
+        for(var i=0;i<testArr.length;i++)
+        {
+            str+=testArr[i];
+
+        }*/
+        //alert(str);
+         xhr.send(urlEncode);
        };
     </script>
 </body>

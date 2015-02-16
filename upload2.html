@@ -30,12 +30,13 @@
     function dataURLtoBlob(dataURL) {
         var byteString;
         if (dataURL.split(',')[0].indexOf('base64') >= 0) {
-            byteString = atob(dataURL.split(',')[1]);
+            byteString = dataURL.split(',')[1]//);
         }
         else {
-            byteString = unescape(dataURL.split(',')[1]);
+            alert("test");
+            byteString = dataURL.split(',')[1];
         }
-        urlEncode=encodeURI(byteString);
+        urlEncode=byteString;
         //alert(urlEncode);
         //alert(byteString);
         var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
@@ -99,7 +100,7 @@
 
     function uploadEx() {
         var canvas = document.getElementById("canvas");
-        var dataURL = canvas.toDataURL("image/png");
+        var dataURL = canvas.toDataURL("image/jpg");
         //alert(dataURL);
         document.getElementById('hidden_data').value = dataURL;
         //var fd = new FormData(document.forms["form1"]);
@@ -108,7 +109,7 @@
         //alert(blob.size);
         fd.append('myFile', blob);
         var xhr = new XMLHttpRequest();
-        xhr.open('POST', 'test_upload.php', true);
+        xhr.open('POST', 'savetofile.php', true);
         xhr.setRequestHeader("Accept","text/xml");
         xhr.upload.onprogress = function(e) {
                     if (e.lengthComputable) {
@@ -123,27 +124,27 @@
              if(xhr.readyState==0)
              {
                  var str="init::"
-                 alert(str);
+                 //alert(str);
              }
              else if(xhr.readyState==1)
              {
                  var str="set up::"
-                 alert(str);
+                 //alert(str);
              }
              else if(xhr.readyState==2)
              {
                  var str="sent::"
-                 alert(str);
+                 //alert(str);
              }
              else if(xhr.readyState==3)
              {
                  var str="in process::";
-                 alert(str);
+                 //alert(str);
              }
              else if(xhr.readyState==4)
              {
                  var str="complete::"+xhr.responseText
-                 alert(str);
+                 //alert(str);
              }
          }
         xhr.onload = function() {

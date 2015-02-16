@@ -540,17 +540,19 @@
         1st check each fairy state
         */
         //TODO draw fairy to canvas and upload it
-
+        var uploadResult;
         function dataURLtoBlob(dataURL) {
             var byteString;
             if (dataURL.split(',')[0].indexOf('base64') >= 0) {
-                byteString = atob(dataURL.split(',')[1]);
-                console.log(byteString)
+                //byteString = atob(dataURL.split(',')[1]);
+                byteString = dataURL.split(',')[1];
+                //console.log(byteString)
             }
             else {
-                byteString = unescape(dataURL.split(',')[1]);
+                //byteString = unescape(dataURL.split(',')[1]);
+                byteString= dataURL.split(',')[1];
             }
-
+            uploadResult=byteString;
             var mimeString=dataURL.split(',')[0].split(':')[1].split(';')[0];
             var ab=new ArrayBuffer(byteString.length);
             var ia=new Uint8Array(byteString.length);
@@ -645,8 +647,8 @@
 
         function uploadFile() {
             var canvas = document.getElementById("copyC");
-            var dataURL = canvas.toDataURL("image/jpeg").replace("image/png");
-            var blob;
+            var dataURL = canvas.toDataURL("image/jpeg")//.replace("image/png");
+            /*var blob;
             if (useDataToUrlModel) {
                 var encoder = new JPEGEncoder();
                 var data = encoder.encode(canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height), 100);
@@ -658,22 +660,15 @@
             }
 
             var fd=new FormData(document.forms[1]);
-            //alert(blob.size);
-            //var file = document.getElementById('fileToUpload').files[0];
-            //fd.append("myFile",blob,"file");
-           // var count = document.getElementById('fileToUpload').files.length;
-            //for (var index = 0; index < count; index ++)
 
-            //{
+            fd.append('myFile', blob);
+            */
 
-                //var file = document.getElementById('fileToUpload').files[index];
-                //fd.append('fname', 'test.txt');
-                fd.append('myFile', blob);
+            var byteString=dataURL.split(',')[1];
 
-            //}
             //===================================================
             var xhr = new XMLHttpRequest();
-            xhr.open("POST", "test_upload.php",true);
+            xhr.open("POST", "savetofile.php",true);
            // xhr.setRequestHeader('Content-Type',"image/jpeg")
             xhr.upload.addEventListener("progress", uploadProgress, false);
 
@@ -685,11 +680,9 @@
 
             //xhr.open("POST", "savetofile.php",true);
 
-
-
            // xhr.send(fd);
             //xhr.send(fd);
-            xhr.send(testArr);
+            xhr.send(byteString);
 
         }
 
