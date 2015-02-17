@@ -492,11 +492,16 @@
             }
             //copy image pic to back, copy visible==true fairy to canvas and rotate it
             var copy= Q.getDOM("copyC");
-            if(selectedBgImage) {
-                var ctx = copy.getContext("2d");
-                //var imageH, imageW;
+            var ctx = copy.getContext("2d");
+            if(ctx) {
                 ctx.save();
-                ctx.clearRect(0, 0, 600,800);
+                ctx.clearRect(0, 0, 600, 800);
+            }
+            if(selectedBgImage) {
+
+                //var imageH, imageW;
+
+
                 /*if(selectedBgImage.height> MAX_HEIGHT)
                 {
                     imageH=MAX_HEIGHT;
@@ -521,9 +526,10 @@
                     selectedBgImage.height=imageH;
                     ctx.drawImage(selectedBgImage,0,0,imageW,imageH);
                 }
-                ctx.restore();
+
             }
             copyEditedFairy();
+            ctx.restore();
         }
 
         function loadFileToNewCanvas(file)
