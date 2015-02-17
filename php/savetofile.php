@@ -12,7 +12,7 @@ if (FALSE == $file_data)
 $tmpfname = tempnam("/tmp", "UPD");
 $handle = fopen($tmpfname, 'wb');
 flock($handle, LOCK_EX);
-fwrite($handle, $input_data);
+fwrite($handle, $file_data);
 flock($handle, LOCK_UN);
 fclose($handle);
 
@@ -35,14 +35,23 @@ $file_size = filesize($tmpfname);
         $extension = '.pdf';
     else
         $extension = '.jpg';
-    $destination = get_destination($dir, $date, basename($tmpfname), $extension, $file_size);
-    echo $destination;
-    $xx = rename($tmpfname, $destination);
-    if ($xx) {
-        echo $destination . ' successful ' . $file_size;
-    } else {
+    $destination = get_target_path($dir, basename($tmpfname), $extension);
+    $xx = rename($tmpfname, $destination[0]);
+    if ($xx)
+        echo $destination[1];
+    else
         echo 'move uploaded file failed';
-    }
+
+function get_target_path($dir, $orig_name, $extension)
+{
+	$current_time = time();
+	$url_path = implode(DIRECTORY_SEPARATOR, array(strftime('%Y', $current_time), strftime('%m', $current_time), strftime('%d', $current_time))) . DIRECTORY_SEPARATOR . $orig_name . $extension;
+	$path = $dir . $url_path;
+        $url = sprintf('http://%s/php/uploads/%s', $_SERVER['HTTP_HOST'], $url_path);
+	if (FALSE == file_exists(dirname($path)))
+		mkdir(dirname($path), 0755, TRUE);
+	return array($path, $url);
+}
 
 function get_destination($dir, $date, $prefix, $extension, $size) {
     
