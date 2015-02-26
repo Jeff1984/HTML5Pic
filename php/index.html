@@ -36,11 +36,13 @@
 
         var AnchorRota,AnchorScale,selectedFile;
 
-        const DEBUG=true,useDataToUrlModel=false;
+        const DEBUG=false,useDataToUrlModel=false;
 
         var startRtateX,startRotateY,dragOffsetX,dragOffsetY;
         //document.getElementById("parm").innerHTML="Notinit";
         window.onload = init;
+
+        //var initComplete=false;
 
         window.onorientationchange=readDeviceOrientation;
 
@@ -56,19 +58,14 @@
             {
                 org=PORT;
                 document.getElementById("orientation").innerHTML="PORT";
-
-                //showDebug(window.orientation);
             }
         }
         function init(){
-
-
             container = Q.getDOM("container");
-
+            document.getElementById("buttonContainer").style.visibility="hidden";
             params = Quark.getUrlParams();
             if(params.mode == undefined) params.mode = 2;
-
-
+            if(!DEBUG)  Q.getDOM("copyC").style.visibility="hidden";
             try {
                 canvas= Q.getDOM("testC");
 
@@ -151,7 +148,6 @@
                 editArr.push(im);
                 im.setWidth(200);
                 im.setHeight(200);
-
                 im.x=300;
                 im.y=300;
                 im.visible=false;
@@ -189,6 +185,9 @@
             AnchorRota.scaleX=AnchorRota.scaleY=AnchorScale.scaleX=AnchorScale.scaleY=.7;
             stage.addChild(AnchorRota,AnchorScale);
             AnchorRota.visible=AnchorScale.visible=false;
+
+            //alert("init complete");
+            document.getElementById("buttonContainer").style.visibility="visible";
         }
 
         function startRotate(e)
@@ -339,57 +338,37 @@
          //files related
         function fileSelected() {
 
-            var count = document.getElementById('fileToUpload').files.length;
-
-            //for (var index = 0; index < count; index ++)
-            //{
-                var file = document.getElementById('fileToUpload').files[0];
-                loadFileToNewCanvas(file);
-
-                /*var fileSize = 0;
-
-                if (file.size > 1024 * 1024)
-
-                    fileSize = (Math.round(file.size * 100 / (1024 * 1024)) / 100).toString() + 'MB';
-
-                else
-
-                    fileSize = (Math.round(file.size * 100 / 1024) / 100).toString() + 'KB';
-
-                document.getElementById('details').innerHTML += 'Name: ' + file.name + '<br>Size: ' + fileSize + '<br>Type: ' + file.type;
-
-                document.getElementById('details').innerHTML += '<p>';*/
-           // }
+            var file = document.getElementById('fileToUpload').files[0];
+            loadFileToNewCanvas(file);
             window.clearInterval(ti);
         }
 
         function copyEditedFairy()
         {
-            var i,toAddedImage,tempImage;
-            console.log("start coping...");
-            for(i=0;i<editArr.length;i++)
+            var i,toAddedImage,tempImage,renderTimer;
+
+            renderTimer=new Date().getMilliseconds();
+            for(i=0;i<stage.getNumChildren();i++)
             {
-                //if(editArr[i].name!=e.detail.name)
-                //{
-                   // editArr[i].setState(STATE.none);
-                //}
-                toAddedImage=editArr[i];
-                if(toAddedImage.visible==false)
+                console.log(stage.getChildAt(i).name);
+                toAddedImage=stage.getChildAt(i)
+                if(toAddedImage.name==null||toAddedImage.visible==false)
                 {
                     continue;
                 }
                 tempImage=imageDics[toAddedImage.name].image;
                 copyTempImageToCopyCanvas(tempImage,toAddedImage.x,toAddedImage.y,toAddedImage.getWidth(),toAddedImage.getHeight(),toAddedImage.rotation);
-                //console.log(i,toAddedImage.name,toAddedImage.rotation);
-                //console.log(i,toAddedImage.name,toAddedImage.width,toAddedImage.height,toAddedImage.x,toAddedImage.y);
             }
-          //  uploadFile();
+
+            renderTimer=new Date().getMilliseconds()-renderTimer;
+            console.log("start coping...",renderTimer);
         }
 
         function copyTempImageToCopyCanvas(_tempImage,x,y,width,height,rot)
         {
             var ctx=Q.getDOM("copyC").getContext("2d");
             ctx.save();
+            console.log("rot...",rot);
             //ctx.translate(x-Math.abs(Math.sin(rot*Math.PI/180)*width/2),y-Math.abs(Math.cos(rot*Math.PI/180)*height/2));
             ctx.translate(x,y);
             ctx.rotate(rot*Math.PI/180);
@@ -414,7 +393,7 @@
             img.onload=function(){
                 ctx.clearRect(0,0,600,800);
                 selectedBgImage=img;
-
+                ctx.save();
                 //test
                 if(img.height>MAX_HEIGHT)
                 {
@@ -444,8 +423,7 @@
                  break;
                  }*/
                 //===================================
-                ctx.save();
-                //alert(ctx);
+
                 if(org==PORT){
                     img.width=imageH;
                     img.height=imageW;
@@ -492,11 +470,14 @@
             }
             //copy image pic to back, copy visible==true fairy to canvas and rotate it
             var copy= Q.getDOM("copyC");
-            if(selectedBgImage) {
-                var ctx = copy.getContext("2d");
-                //var imageH, imageW;
+            var ctx = copy.getContext("2d");
+            if(ctx) {
                 ctx.save();
-                ctx.clearRect(0, 0, 600,800);
+                ctx.clearRect(0, 0, 600, 800);
+            }
+            if(selectedBgImage) {
+
+                //var imageH, imageW;
                 /*if(selectedBgImage.height> MAX_HEIGHT)
                 {
                     imageH=MAX_HEIGHT;
@@ -521,9 +502,11 @@
                     selectedBgImage.height=imageH;
                     ctx.drawImage(selectedBgImage,0,0,imageW,imageH);
                 }
-                ctx.restore();
+
             }
+            ctx.restore();
             copyEditedFairy();
+
         }
 
         function loadFileToNewCanvas(file)
@@ -643,6 +626,39 @@
                 }
             }
             return _blob;
+        }
+
+        //released upload
+        function copyAndUpload()
+        {
+            if(selectedTarget)
+            {
+                selectedTarget.state=STATE.none;
+            }
+            //copy image pic to back, copy visible==true fairy to canvas and rotate it
+            var copy= Q.getDOM("copyC");
+            var ctx = copy.getContext("2d");
+            if(ctx) {
+                ctx.save();
+                ctx.clearRect(0, 0, 600, 800);
+            }
+            if(selectedBgImage) {
+                if(org==PORT){
+                    selectedBgImage.width=imageH;
+                    selectedBgImage.height=imageW;
+                    ctx.translate(imageW,0);
+                    ctx.rotate(Math.PI/2);
+                    ctx.drawImage(selectedBgImage,0,0,imageH,imageW);
+                }else
+                {
+                    selectedBgImage.width=imageW;
+                    selectedBgImage.height=imageH;
+                    ctx.drawImage(selectedBgImage,0,0,imageW,imageH);
+                }
+            }
+            ctx.restore();
+            copyEditedFairy();
+            uploadFile();
         }
 
         function uploadFile() {
@@ -883,6 +899,7 @@
                 <input type="button" onclick="combinePic5()" value="奥可精灵"  style="height:80px"/>
                 <input type="button" onclick="copyCanvas()" value="Copy"  style="height:80px"/>
                 <input type="button" onclick="uploadFile()" value="Upload"  style="height:80px"/>
+                <input type="button" onclick="copyAndUpload()" value="上传"  style="height:80px"/>
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                 <label id="parm">12222</label>
                 <label id="orientation">no way</label>
