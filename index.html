@@ -66,6 +66,8 @@
             params = Quark.getUrlParams();
             if(params.mode == undefined) params.mode = 2;
             if(!DEBUG)  Q.getDOM("copyC").style.visibility="hidden";
+            //document.getElementById("Copy").style.visibility="hidden";
+            //document.getElementById("Upload").style.visibility="hidden";
             try {
                 canvas= Q.getDOM("testC");
 
@@ -897,8 +899,8 @@
                 <input type="button" onclick="combinePic3()" value="喵喵精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic4()" value="铁骑士精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic5()" value="奥可精灵"  style="height:80px"/>
-                <input type="button" onclick="copyCanvas()" value="Copy"  style="height:80px"/>
-                <input type="button" onclick="uploadFile()" value="Upload"  style="height:80px"/>
+                <!--<input type="button" onclick="copyCanvas()" value="Copy"  style="height:80px"/>
+                <input type="button" onclick="uploadFile()" value="Upload"  style="height:80px"/>-->
                 <input type="button" onclick="copyAndUpload()" value="上传"  style="height:80px"/>
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                 <label id="parm">12222</label>
