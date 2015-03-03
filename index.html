@@ -326,7 +326,15 @@
             var id=getFairyByName(name);
             origChildId=stage.getChildIndex(editArr[id]);
             stage.swapChildrenAt(origChildId,4);
-            editArr[id].visible=true;
+            //AnchorRota.visible=
+                    //AnchorScale.visible=
+            editArr[id].visible=editArr[id].visible?false:true;
+
+            if(editArr[id].visible==false)
+            {
+                AnchorRota.visible= AnchorScale.visible= false;
+            }
+
         }
 
         function setSelectImage(value)
