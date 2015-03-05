@@ -3,118 +3,12 @@
 <html>
  
 <head>
+
 <meta http-equiv="content-type" content="text/html" charset="utf-8"/>
-    <title>快来和精灵合影吧</title>
+    <title>1.1Take or select photo(s) and upload</title>
 	<script src="quark.base-1.0.0.js"></script>
-    <script src="exif.js"></script>
-    <!--<script type="text/javascript" src="WeixinApi.js"></script>
-    <script>
+    <script src="jpeg_encoder_basic.js"></script>
 
-        var lineLink    = 'http://10.0.55.212:5100/php/uploads/index.html';    // 要分享的页面的URL
-        var imgUrl      = 'http://10.0.55.212:5100/php/icon.png';    // 显示在微信里的缩略图
-        var shareTitle  = '页面标题';          // 页面标题
-        var descContent = "页面内容简介";      // 内容简介
-        var appid       = 'wx5db4ca8d702c0373';                  // APP ID, 可以为空
-        var appsecret='574f7ad55b58f0ee204c0f6a524e37b6';
-
-
-        function wx_shareFriend() {
-            alert("share TO Friends");
-            WeixinJSBridge.invoke('sendAppMessage',{
-                "appid": appid,
-                "img_url": imgUrl,
-                //"img_width": "640",
-                //"img_height": "640",
-                "link": lineLink,
-                "desc": descContent,
-                "title": shareTitle
-            }, function(res) {
-                alert(res.err_msg);
-            })
-        }
-
-        function wx_shareTimeline() {
-            WeixinJSBridge.invoke('shareTimeline',{
-                "img_url": imgUrl,
-               // "img_width": "640",
-               // "img_height": "640",
-                "link": lineLink,
-                "desc": descContent,
-                "title": shareTitle
-            }, function(res) {
-                alert(res.err_msg);
-            });
-        }
-
-        function wx_shareWeibo() {
-            WeixinJSBridge.invoke('shareWeibo',{
-                "content": descContent,
-                "url": lineLink,
-            }, function(res) {
-                //alert(res.err_msg);
-            });
-        }
-
-        function onBridgeReady(){
-            WeixinJSBridge.on('menu:share:appmessage', wx_shareFriend);   // 发送给朋友
-            WeixinJSBridge.on('menu:share:timeline',   wx_shareTimeline); // 分享到朋友圈
-            WeixinJSBridge.on('menu:share:weibo',      wx_shareWeibo);    // 分享到微博
-
-           // WeixinApi.hideOptionMenu();
-        }
-
-        if (typeof WeixinJSBridge == "undefined"){
-            if( document.addEventListener ){
-                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
-            }else if (document.attachEvent){
-                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
-                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
-            }
-        }else{
-            onBridgeReady();
-        }
-        /*var _hmt = _hmt || [];
-        (function() {
-            var hm = document.createElement("script");
-            hm.src = "//hm.baidu.com/hm.js?91f4361e83cf34ffe3b6dd0471ee205a";
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
-
-        })();
-
-        window.wxData = {
-            "appId": "wx5db4ca8d702c0373", // 服务号可以填写appId
-            "imgUrl":'http://10.0.55.212:5100/php/icon.png',
-            "link":'http://app9.download.anzhuoshangdian.com/cat/',
-            "desc":"快来和精灵合影吧",
-            "title":"快来和精灵合影吧"
-        };
-        window.wxFriend = {
-            "appId": "wx5db4ca8d702c0373", // 服务号可以填写appId
-            "imgUrl":'http://10.0.55.212:5100/php/icon.png',
-            "link":'http://app9.download.anzhuoshangdian.com/cat/',
-            "desc":'快来和精灵合影吧',
-            "title":"快来和精灵合影吧"
-        };
-        WeixinApi.ready(function(Api) {
-            var wxCallbacks = {
-                ready : function() {
-                },
-                cancel : function(resp) {
-                },
-                fail : function(resp) {
-                },
-                confirm : function(resp) {
-                    window.wxFriend="http://www.75team.com"
-                },
-                all : function(resp) {
-                }
-            };
-            Api.shareToFriend(wxFriend, wxCallbacks);
-            Api.shareToTimeline(wxData, wxCallbacks);
-            Api.shareToWeibo(wxData, wxCallbacks);
-        });*/
-    </script>-->
     <script type="text/javascript">
 		//create a DOMContext
 		var container; //= Quark.getDOM("container");
@@ -147,6 +41,8 @@
         var startRtateX,startRotateY,dragOffsetX,dragOffsetY;
         //document.getElementById("parm").innerHTML="Notinit";
         window.onload = init;
+
+        //var initComplete=false;
 
         window.onorientationchange=readDeviceOrientation;
 
@@ -276,9 +172,6 @@
                         }
                     }
                 },false);
-
-                //weixin
-
             }
             AnchorRota= new Q.Button({id:"btn2", image:e.images.rotate.image, regX:60,regY:60, width:120, height:120,
                 up:{rect:[0,120,120,120]}});
@@ -433,15 +326,7 @@
             var id=getFairyByName(name);
             origChildId=stage.getChildIndex(editArr[id]);
             stage.swapChildrenAt(origChildId,4);
-            //AnchorRota.visible=
-                    //AnchorScale.visible=
-            editArr[id].visible=editArr[id].visible?false:true;
-
-            if(editArr[id].visible==false)
-            {
-                AnchorRota.visible= AnchorScale.visible= false;
-            }
-
+            editArr[id].visible=true;
         }
 
         function setSelectImage(value)
@@ -503,8 +388,8 @@
             //QQ browser support it
             img.src=window.webkitURL.createObjectURL(file);
             /*var base64 = img.src.replace(/^.*?,/,'');
-             //var binary = window.atob(base64);
-             var binaryData = new BinaryFile(base64);
+             var binary = window.atob(base64);
+             var binaryData = new BinaryFile(binary);
              var exif=EXIF.readFromBinaryFile(binaryData);*/
 
             img.onload=function(){
@@ -526,18 +411,18 @@
                 }
                 //==============================EXIF
                 /*var orientation = exif ? exif.Orientation  : 1;
-                     alert(orientation);
-                     // 判断拍照设备持有方向调整照片角度
-                     switch(orientation) {
-                     case 3:
-                     //imgRotation = 180;
-                     break;
-                     case 6:
-                     //imgRotation = 90;
-                     break;
-                     case 8:
-                     //imgRotation = 270;
-                     break;
+                 alert(orientation);
+                 // 判断拍照设备持有方向调整照片角度
+                 switch(orientation) {
+                 case 3:
+                 //imgRotation = 180;
+                 break;
+                 case 6:
+                 //imgRotation = 90;
+                 break;
+                 case 8:
+                 //imgRotation = 270;
+                 break;
                  }*/
                 //===================================
 
@@ -844,8 +729,6 @@
             /* This event is raised when the server send back a response */
             alert(evt.target.responseText);
 
-            window.open("http://10.0.55.212:5100/php/uploads/",evt.target.responseText);
-
         }
 
         function uploadFailed(evt) {
@@ -857,11 +740,6 @@
         function uploadCanceled(evt) {
 
             alert("The upload has been canceled by the user or the browser dropped the connection.");
-
-        }
-
-        function backAndReset(evt)
-        {
 
         }
 
@@ -1010,7 +888,6 @@
 </head>
  
     <body>
-        <img src="http://10.0.55.212:5100/php/icon.png" width="0" height="0"/>
         <div id="container">
             <canvas id="testC" width="600" height="800" style="background-color: rgb(0, 0, 0)"></canvas>
             <canvas id="copyC" width="600" height="800" style="background-color: rgb(0, 0, 0)"></canvas>
@@ -1022,8 +899,6 @@
                 <input type="button" onclick="combinePic3()" value="喵喵精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic4()" value="铁骑士精灵"  style="height:80px"/>
                 <input type="button" onclick="combinePic5()" value="奥可精灵"  style="height:80px"/>
-                <!--最终版返回按钮
-                <input type="button" onclick="backAndReset()" value="返回编辑"  style="height:80px"/>-->
                 <!--<input type="button" onclick="copyCanvas()" value="Copy"  style="height:80px"/>
                 <input type="button" onclick="uploadFile()" value="Upload"  style="height:80px"/>-->
                 <input type="button" onclick="copyAndUpload()" value="上传"  style="height:80px"/>
