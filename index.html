@@ -7,6 +7,9 @@
     <title>快来和精灵合影吧</title>
 	<script src="quark.base-1.0.0.js"></script>
     <script src="exif.js"></script>
+    <script src="binaryajax.js"></script>
+    <script src="editableImage.js"></script>
+
     <!--<script type="text/javascript" src="WeixinApi.js"></script>
     <script>
 
@@ -142,13 +145,13 @@
 
         var AnchorRota,AnchorScale,selectedFile;
 
-        const DEBUG=false,useDataToUrlModel=false;
+        const DEBUG=false,useDataToUrlModel=false,useExif=true;
 
         var startRtateX,startRotateY,dragOffsetX,dragOffsetY;
         //document.getElementById("parm").innerHTML="Notinit";
         window.onload = init;
-
-        window.onorientationchange=readDeviceOrientation;
+        if(!useExif)
+             window.onorientationchange=readDeviceOrientation;
 
 		//or create a CanvasContext
         function readDeviceOrientation()
@@ -183,6 +186,9 @@
                     showDebug("SUPPORT CANVAS")
                 }
 
+                //canvas.width=200;
+               // canvas.height=200;
+
                 var canvasContext = new Q.CanvasContext({canvas: canvas});
 
                 domContext = new Quark.DOMContext({canvas: container});
@@ -207,7 +213,8 @@
             timer.addListener(stage);
             timer.start();
 
-           ti=setInterval(readDeviceOrientation,1/20);
+            if(!useExif)
+                ti=setInterval(readDeviceOrientation,1/20);
 
            var em = new Quark.EventManager();
            events= Quark.supportTouch ? ["touchstart", "touchmove", "touchend"] : ["mousedown", "mousemove", "mouseup"];
@@ -276,9 +283,6 @@
                         }
                     }
                 },false);
-
-                //weixin
-
             }
             AnchorRota= new Q.Button({id:"btn2", image:e.images.rotate.image, regX:60,regY:60, width:120, height:120,
                 up:{rect:[0,120,120,120]}});
@@ -452,13 +456,83 @@
             }
         }
 
+        var imgRotation;
          //files related
+
         function fileSelected() {
 
-            var file = document.getElementById('fileToUpload').files[0];
+           var file = document.getElementById('fileToUpload').files[0];
+            //test exif
+            var fr = new FileReader();
+            fr.readAsDataURL(file);
+            fr.onload = function(fe){
+                var result = this.result;
+                var img = new Image();
+                var exif;
+                img.onload = function() {
+                    var base64 = result.replace(/^.*?,/,'');
+                    var binary = atob(base64);
+                    var binaryData = new BinaryFile(binary);
+                    exif = EXIF.readFromBinaryFile(binaryData);
+                    var orientation = exif ? exif.Orientation : 1;
+                    // 判断拍照设备持有方向调整照片角度
+                    alert(String(orientation)+" "+String(exif.PixelXDimension)+" "+String(exif.PixelYDimension));
+                    switch(orientation) {
+                        case 3:
+                            imgRotation = 180;
+                            break;
+                        case 6:
+                            imgRotation = 90;
+                            break;
+                        case 8:
+                            imgRotation = 270;
+                            break;
+                        default :
+                            imgRotation=0;
+                            break;
+                    }
+
+                    //alert(imgRotation);
+                };
+
+                // 转换二进制数据
+
+                img.src = result;
+            };
+            //
             loadFileToNewCanvas(file);
-            window.clearInterval(ti);
+            if(!useExif)
+                 window.clearInterval(ti);
         }
+
+        //test
+        function showResult(fr, label) {
+            var markup, result, n, aByte, byteStr;
+
+            markup = [];
+            result = fr.result;
+            for (n = 0; n < result.length; ++n) {
+                aByte = result.charCodeAt(n);
+                byteStr = aByte.toString(16);
+                if (byteStr.length < 2) {
+                    byteStr = "0" + byteStr;
+                }
+                markup.push(byteStr);
+            }
+            bodyAppend("p", label + " (" + result.length + "):");
+            bodyAppend("pre", markup.join(" "));
+
+            alert(markup);
+        }
+
+        function bodyAppend(tagName, innerHTML) {
+            var elm;
+
+            elm = document.createElement(tagName);
+            elm.innerHTML = innerHTML;
+            document.body.appendChild(elm);
+        }
+        //
 
         function copyEditedFairy()
         {
@@ -502,58 +576,72 @@
             selectedFile=file;
             //QQ browser support it
             img.src=window.webkitURL.createObjectURL(file);
-            /*var base64 = img.src.replace(/^.*?,/,'');
-             //var binary = window.atob(base64);
-             var binaryData = new BinaryFile(base64);
-             var exif=EXIF.readFromBinaryFile(binaryData);*/
 
+            console.log(_targetCanvas.width,_targetCanvas.height);
             img.onload=function(){
-                ctx.clearRect(0,0,600,800);
+                ctx.clearRect(0,0,_targetCanvas.width,_targetCanvas.height);
                 selectedBgImage=img;
                 ctx.save();
-                //test
-                if(img.height>MAX_HEIGHT)
-                {
-                    imageH=MAX_HEIGHT;
-                }else{
-                    imageH=img.height
-                }
-                if(img.width>MAX_WIDTH)
-                {
-                    imageW=MAX_WIDTH;
-                }else{
-                    imageW=img.width
-                }
-                //==============================EXIF
-                /*var orientation = exif ? exif.Orientation  : 1;
-                     alert(orientation);
-                     // 判断拍照设备持有方向调整照片角度
-                     switch(orientation) {
-                     case 3:
-                     //imgRotation = 180;
-                     break;
-                     case 6:
-                     //imgRotation = 90;
-                     break;
-                     case 8:
-                     //imgRotation = 270;
-                     break;
-                 }*/
-                //===================================
+                if(!useExif) {
+                    if (img.height > MAX_HEIGHT) {
+                        imageH = MAX_HEIGHT;
+                    } else {
+                        imageH = img.height
+                    }
+                    if (img.width > MAX_WIDTH) {
+                        imageW = MAX_WIDTH;
+                    } else {
+                        imageW = img.width
+                    }
 
-                if(org==PORT){
-                    img.width=imageH;
-                    img.height=imageW;
+                    if(org==PORT){
+                        img.width=imageH;
+                        img.height=imageW;
 
-                    ctx.translate(imageW,0);
-                    ctx.rotate(Math.PI/2);
+                        ctx.translate(imageW,0);
+                        ctx.rotate(Math.PI/2);
 
-                    ctx.drawImage(img,0,0,imageH,imageW);
+                        ctx.drawImage(img,0,0,imageH,imageW);
+                    }else
+                    {
+                        img.width=imageW;
+                        img.height=imageH;
+                        ctx.drawImage(img,0,0,imageW,imageH);
+                    }
                 }else
                 {
-                    img.width=imageW;
-                    img.height=imageH;
-                    ctx.drawImage(img,0,0,imageW,imageH);
+                    //TODO fix exif edition
+
+                    var rotate;
+                    if(imgRotation==90||imgRotation==270)
+                    {
+                        //width 600 height 800
+                        imageW=600;
+                        imageH=800;
+                        stage.width=_targetCanvas.width=600;
+                        stage.height=_targetCanvas.height=800;
+                        if(imgRotation==270)
+                        {
+                            rotate=Math.PI;
+                            ctx.rotate(rotate);
+                        }
+                        ctx.drawImage(img,0,0,imageW,imageH);
+
+                    }else
+                    {
+                        //width 800 height 600
+                        imageW=800;
+                        imageH=600;
+                        stage.width=_targetCanvas.width=800;
+                        stage.height=_targetCanvas.height=600;
+
+                        //ctx.translate(imageW,0);
+                        rotate=imgRotation==180?Math.PI/2:0-Math.PI/2
+                        //        ctx.rotate(rotate);
+                        ctx.drawImage(img,0,0,imageW,imageH);
+                    }
+                    console.log("ROTATE::",rotate,stage.y,_targetCanvas.y);
+
                 }
                 ctx.restore();
             }
@@ -594,19 +682,6 @@
             }
             if(selectedBgImage) {
 
-                //var imageH, imageW;
-                /*if(selectedBgImage.height> MAX_HEIGHT)
-                {
-                    imageH=MAX_HEIGHT;
-                }else{
-                    imageH=selectedBgImage.height
-                }
-                if(selectedBgImage.width> MAX_WIDTH)
-                {
-                    imageW=MAX_WIDTH;
-                }else{
-                    imageW=selectedBgImage.width
-                }*/
                 if(org==PORT){
                     selectedBgImage.width=imageH;
                     selectedBgImage.height=imageW;
@@ -870,7 +945,7 @@
          * Created by zhangchi on 2015/1/15.
          */
         //===================================================================================================================================================================================================================
-        const STATE={
+       /* const STATE={
             editing:"editing",
             dragging:"dragging",
             scaling:"scaling",
@@ -1004,7 +1079,7 @@
                  this.x = mousePos.x //- dragOffsetX;
                  this.y = mousePos.y //-dragOffsetY;
             }
-        }
+        }*/
 
     </script>
 </head>
