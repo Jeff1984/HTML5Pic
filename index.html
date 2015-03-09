@@ -197,7 +197,7 @@
                 alert(e);
             }
 
-            stage = new Q.Stage({width:600, height:800,x:10,
+            stage = new Q.Stage({width:600, height:800,x:10,y:10,
                 style: {
                     position: "absolute",
                 },
@@ -456,11 +456,11 @@
             }
         }
 
-        var imgRotation;
+        var imgRotation=-1;;
          //files related
 
         function fileSelected() {
-
+           imgRotation=-1;
            var file = document.getElementById('fileToUpload').files[0];
             //test exif
             var fr = new FileReader();
@@ -474,9 +474,25 @@
                     var binary = atob(base64);
                     var binaryData = new BinaryFile(binary);
                     exif = EXIF.readFromBinaryFile(binaryData);
-                    var orientation = exif ? exif.Orientation : 1;
+                    //PixelYDimension//PixelXDimension
+                    alert(String(exif.Orientation)+" "+String(exif.PixelYDimension)+" "+String(exif.PixelXDimension))
+                    if(exif)
+                    {
+                        if(exif.Orientation==8||exif.Orientation==6)
+                        {
+                            alert("竖着放，兄弟");
+                            imgRotation=90;
+                        }else
+                        {
+                            alert("横着放，兄弟");
+                            imgRotation=0;
+                        }
+                    }
+
+                    loadFileToNewCanvas(file);
+                    /*var orientation = exif ? exif.Orientation : 1;
                     // 判断拍照设备持有方向调整照片角度
-                    alert(String(orientation)+" "+String(exif.PixelXDimension)+" "+String(exif.PixelYDimension));
+
                     switch(orientation) {
                         case 3:
                             imgRotation = 180;
@@ -490,7 +506,7 @@
                         default :
                             imgRotation=0;
                             break;
-                    }
+                    }*/
 
                     //alert(imgRotation);
                 };
@@ -500,7 +516,7 @@
                 img.src = result;
             };
             //
-            loadFileToNewCanvas(file);
+
             if(!useExif)
                  window.clearInterval(ti);
         }
@@ -582,6 +598,8 @@
                 ctx.clearRect(0,0,_targetCanvas.width,_targetCanvas.height);
                 selectedBgImage=img;
                 ctx.save();
+               // exif.PixelYDimension
+               // alert(String(selectedBgImage.width)+" "+String(selectedBgImage.height));
                 if(!useExif) {
                     if (img.height > MAX_HEIGHT) {
                         imageH = MAX_HEIGHT;
@@ -611,9 +629,7 @@
                 }else
                 {
                     //TODO fix exif edition
-
-                    var rotate;
-                    if(selectedBgImage.width<selectedBgImage.height)
+                    if(imgRotation==90)
                     {
                         //width 600 height 800
                         imageW=600;
@@ -625,7 +641,10 @@
                             rotate=Math.PI;
                             ctx.rotate(rotate);
                         }*/
-                        ctx.drawImage(img,0,0,imageW,imageH);
+                        ctx.translate(imageW,0);
+                        ctx.rotate(Math.PI/2);
+                        ctx.drawImage(img,0,0,imageH,imageW);
+                       // alert("说好的竖着放哪");
 
                     }else
                     {
@@ -640,6 +659,7 @@
                         //        ctx.rotate(rotate);
                         ctx.drawImage(img,0,0,imageW,imageH);
                     }
+                    //alert(imgRotation);
                     //console.log("ROTATE::",rotate,stage.y,_targetCanvas.y);
 
                 }
@@ -1085,12 +1105,12 @@
 </head>
  
     <body>
-        <img src="http://10.0.55.212:5100/php/icon.png" width="0" height="0"/>
+
         <div id="container">
             <canvas id="testC" width="600" height="800" style="background-color: rgb(0, 0, 0)"></canvas>
             <canvas id="copyC" width="600" height="800" style="background-color: rgb(0, 0, 0)"></canvas>
         </div>
-
+        <img src="http://10.0.55.212:5100/php/icon.png" width="0" height="0"/>
         <div id="buttonContainer" style="top:810px; left:0px; position:absolute">
                 <input type="button" onclick="combinePic1()" value="花花精灵" style="height:80px"/>
                 <input type="button" onclick="combinePic2()" value="天使精灵"  style="height:80px"/>
