@@ -613,18 +613,18 @@
                     //TODO fix exif edition
 
                     var rotate;
-                    if(imgRotation==90||imgRotation==270)
+                    if(selectedBgImage.width<selectedBgImage.height)
                     {
                         //width 600 height 800
                         imageW=600;
                         imageH=800;
                         stage.width=_targetCanvas.width=600;
                         stage.height=_targetCanvas.height=800;
-                        if(imgRotation==270)
+                        /*if(imgRotation==270)
                         {
                             rotate=Math.PI;
                             ctx.rotate(rotate);
-                        }
+                        }*/
                         ctx.drawImage(img,0,0,imageW,imageH);
 
                     }else
@@ -636,11 +636,11 @@
                         stage.height=_targetCanvas.height=600;
 
                         //ctx.translate(imageW,0);
-                        rotate=imgRotation==180?Math.PI/2:0-Math.PI/2
+                        //rotate=imgRotation==180?Math.PI/2:0-Math.PI/2
                         //        ctx.rotate(rotate);
                         ctx.drawImage(img,0,0,imageW,imageH);
                     }
-                    console.log("ROTATE::",rotate,stage.y,_targetCanvas.y);
+                    //console.log("ROTATE::",rotate,stage.y,_targetCanvas.y);
 
                 }
                 ctx.restore();
