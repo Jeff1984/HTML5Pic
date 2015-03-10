@@ -145,7 +145,7 @@
 
         var AnchorRota,AnchorScale,selectedFile;
 
-        const DEBUG=false,useDataToUrlModel=false,useExif=true;
+        const DEBUG=true,useDataToUrlModel=false,useExif=true;
 
         var startRtateX,startRotateY,dragOffsetX,dragOffsetY;
         //document.getElementById("parm").innerHTML="Notinit";
@@ -475,17 +475,19 @@
                     var binaryData = new BinaryFile(binary);
                     exif = EXIF.readFromBinaryFile(binaryData);
                     //PixelYDimension//PixelXDimension
-                    alert(String(exif.Orientation)+" "+String(exif.PixelYDimension)+" "+String(exif.PixelXDimension))
+                    //alert(String(exif.Orientation)+" "+String(exif.PixelYDimension)+" "+String(exif.PixelXDimension))
                     if(exif)
                     {
                         if(exif.Orientation==8||exif.Orientation==6)
                         {
-                            alert("竖着放，兄弟");
+                            //alert("竖着放，兄弟");
                             imgRotation=90;
+                            org=PORT;
                         }else
                         {
-                            alert("横着放，兄弟");
+                            //alert("横着放，兄弟");
                             imgRotation=0;
+                            org=LAND;
                         }
                     }
 
@@ -575,9 +577,16 @@
         {
             var ctx=Q.getDOM("copyC").getContext("2d");
             ctx.save();
-            console.log("rot...",rot);
+           // alert(imgRotation);
+            console.log("rot...",rot,ctx.rotation);
             //ctx.translate(x-Math.abs(Math.sin(rot*Math.PI/180)*width/2),y-Math.abs(Math.cos(rot*Math.PI/180)*height/2));
-            ctx.translate(x,y);
+           // if(imgRotation==90)
+           // {
+                //ctx.translate(y,x);
+           // }else {
+                ctx.translate(x, y);
+           // }
+            //var rot=imgRotation==90?rot-90:rot;
             ctx.rotate(rot*Math.PI/180);
             //console.log(rot,rot*Math.PI/180);
             ctx.drawImage(_tempImage,-width/2,-height/2,width,height);
@@ -587,6 +596,7 @@
         function addImageToCanvas(_targetCanvas,file)
         {
             var ctx=_targetCanvas.getContext("2d");
+            ctx.save();
             //alert(_targetCanvas);
             var img=new Image();
             selectedFile=file;
@@ -597,7 +607,7 @@
             img.onload=function(){
                 ctx.clearRect(0,0,_targetCanvas.width,_targetCanvas.height);
                 selectedBgImage=img;
-                ctx.save();
+
                // exif.PixelYDimension
                // alert(String(selectedBgImage.width)+" "+String(selectedBgImage.height));
                 if(!useExif) {
@@ -644,6 +654,8 @@
                         ctx.translate(imageW,0);
                         ctx.rotate(Math.PI/2);
                         ctx.drawImage(img,0,0,imageH,imageW);
+
+                        ctx.restore();
                        // alert("说好的竖着放哪");
 
                     }else
@@ -667,7 +679,7 @@
             }
         }
 
-        function drawDataToCanvas(blob)
+       /* function drawDataToCanvas(blob)
         {
             var ctx=canvas.getContext("2d");
             //alert(_targetCanvas);
@@ -685,9 +697,9 @@
                     ctx.drawImage(img,0,0,600,800);
                 ctx.restore();
             }
-        }
+        }*/
 
-        function copyCanvas(evt)
+        function copyCanvas()
         {
             if(selectedTarget)
             {
@@ -695,28 +707,38 @@
             }
             //copy image pic to back, copy visible==true fairy to canvas and rotate it
             var copy= Q.getDOM("copyC");
-            var ctx = copy.getContext("2d");
-            if(ctx) {
-                ctx.save();
-                ctx.clearRect(0, 0, 600, 800);
+            var ctxC = copy.getContext("2d");
+            if(ctxC) {
+                alert("save");
+
+                ctxC.clearRect(0, 0, 800, 800);
             }
             if(selectedBgImage) {
-
+                ctxC.save();
                 if(org==PORT){
+                    stage.width=copy.width=600;
+                    stage.height=copy.height=800;
                     selectedBgImage.width=imageH;
                     selectedBgImage.height=imageW;
-                    ctx.translate(imageW,0);
-                    ctx.rotate(Math.PI/2);
-                    ctx.drawImage(selectedBgImage,0,0,imageH,imageW);
+                    ctxC.save();
+                    ctxC.translate(imageW,0);
+                    ctxC.rotate(Math.PI/2);
+                    ctxC.drawImage(selectedBgImage,0,0,imageH,imageW);
+
+                    ctxC.restore();
+                    ctxC.restore();
+
                 }else
                 {
+                    stage.width=copy.width=800;
+                    stage.height=copy.height=600;
                     selectedBgImage.width=imageW;
                     selectedBgImage.height=imageH;
-                    ctx.drawImage(selectedBgImage,0,0,imageW,imageH);
+                    ctxC.drawImage(selectedBgImage,0,0,imageW,imageH);
                 }
 
             }
-            ctx.restore();
+
             copyEditedFairy();
 
         }
@@ -843,32 +865,61 @@
         //released upload
         function copyAndUpload()
         {
-            if(selectedTarget)
+            /*if(selectedTarget)
             {
                 selectedTarget.state=STATE.none;
             }
             //copy image pic to back, copy visible==true fairy to canvas and rotate it
+
             var copy= Q.getDOM("copyC");
             var ctx = copy.getContext("2d");
             if(ctx) {
-                ctx.save();
-                ctx.clearRect(0, 0, 600, 800);
+
+                ctx.clearRect(0, 0, 800, 800);
             }
             if(selectedBgImage) {
-                if(org==PORT){
-                    selectedBgImage.width=imageH;
-                    selectedBgImage.height=imageW;
-                    ctx.translate(imageW,0);
-                    ctx.rotate(Math.PI/2);
-                    ctx.drawImage(selectedBgImage,0,0,imageH,imageW);
+                ctx.save();
+
+                /*var ctxC=Q.getDOM("testC").getContext("2d");
+                var imgData//=ctxC.get
+                if(imgRotation==90)
+                {
+                    copy.width=600;
+                    copy.height=800;
+                    imgData=ctxC.getImageData(0,0,600,800);
                 }else
                 {
-                    selectedBgImage.width=imageW;
-                    selectedBgImage.height=imageH;
-                    ctx.drawImage(selectedBgImage,0,0,imageW,imageH);
+                    copy.width=800;
+                    copy.height=600;
+                    imgData=ctxC.getImageData(0,0,800,600);
+                }
+
+                ctx.putImageData(imgData,0,0)
+
+                if(imgRotation==90)
+                {
+                    //width 600 height 800
+                    ctx.save();
+                    copy.width=600;
+                    copy.height=800;
+                    ctx.translate(600,0);
+                    ctx.rotate(Math.PI/2);
+                    ctx.drawImage(selectedBgImage,0,0,800,600);
+                    ctx.restore();
+                    ctx.restore();
+                    //ctx.translate(0,0);
+                    //ctx.rotate(0-Math.PI/2);
+
+                }else
+                {
+                    //width 800 height 600
+                    copy.width=800;
+                    copy.height=600;
+                    ctx.drawImage(selectedBgImage,0,0,800,600);
                 }
             }
-            ctx.restore();
+            ctx.restore();*/
+            copyCanvas();
             copyEditedFairy();
             uploadFile();
         }
@@ -906,10 +957,6 @@
 
             xhr.addEventListener("abort", uploadCanceled, false);
 
-            //xhr.open("POST", "savetofile.php",true);
-
-           // xhr.send(fd);
-            //xhr.send(fd);
             xhr.send(byteString);
 
         }
@@ -921,8 +968,6 @@
                 var percentComplete = Math.round(evt.loaded * 100 / evt.total);
 
                 document.getElementById('orientation').innerHTML = percentComplete.toString() + '%';
-
-                //alert(evt.loaded);
 
             }
 
@@ -939,7 +984,7 @@
             /* This event is raised when the server send back a response */
             alert(evt.target.responseText);
 
-            window.open("http://10.0.55.212:5100/php/uploads/",evt.target.responseText);
+           // window.open("http://10.0.55.212:5100/php/uploads/",evt.target.responseText);
 
         }
 
@@ -954,152 +999,6 @@
             alert("The upload has been canceled by the user or the browser dropped the connection.");
 
         }
-
-        function backAndReset(evt)
-        {
-
-        }
-
-        //editableImage======================================================================================================================================================================================================
-        /**
-         * Created by zhangchi on 2015/1/15.
-         */
-        //===================================================================================================================================================================================================================
-       /* const STATE={
-            editing:"editing",
-            dragging:"dragging",
-            scaling:"scaling",
-            rotating:"rotating",
-            none:"none"
-        }
-        var editableImage = function(name,props)
-        {
-            this.srcName=name;
-            this._scaleX=1;
-            this._scaleY=1;
-
-            this._rotation=0;
-            //self=this;
-            editableImage.superClass.constructor.call(this, props);
-            this.init();
-        };
-        Q.inherit(editableImage, Q.DisplayObjectContainer);
-
-        editableImage.prototype.init=function()
-        {
-            this._image=new Q.Bitmap({id:"head", image:imageDics[this.srcName].image, x:0, y:0});
-            this.eventChildren=false;
-            this.addChild(this._image)
-            this.addEventListener(events[0], this.startDrag,false);
-            this.addEventListener(events[2], this.stopDrag,false);
-
-            this._state=STATE.none;
-
-            this._image.x=this.regX=this._image.regX=this._image.width>>1;
-            this._image.y=this.regY=this._image.regY=this._image.height>>1;
-
-        };
-
-        editableImage.prototype.setEditable=function(value)
-        {
-            if(this._editable!=value)
-            {
-                this._editable=value;
-            }
-        };
-
-        editableImage.prototype.setRotation=function (value)
-        {
-            this._rotation=value;
-            this.rotation=value;
-        }
-
-        editableImage.prototype.setWidth=function(value)
-        {
-            this._scaleX=value/this._image.width;
-            this.scaleX=this._scaleX
-        }
-
-        editableImage.prototype.getWidth=function()
-        {
-            return this._image.width*this._scaleX;
-        }
-
-        editableImage.prototype.setHeight=function(value)
-        {
-            this._scaleY=value/this._image.height;
-            this.scaleY=this._scaleY;
-        }
-
-        editableImage.prototype.getHeight=function()
-        {
-            return this._image.height*this._scaleY;
-        }
-
-        editableImage.prototype.getState=function()
-        {
-            return this._state;
-        }
-
-        editableImage.prototype.setState = function(value)
-        {
-            if(this._state!=value)
-            {
-                this._state=value
-            }
-            switch(value)
-            {
-                case STATE.editing:
-                case STATE.dragging:
-                case STATE.rotation:
-                case STATE.scaling:
-                    this.setEditable(true);
-                    break;
-                case STATE.none:
-                    this.setEditable(false);
-                    break;
-            }
-        }
-
-        editableImage.prototype.startDrag = function(e)
-        {
-            if(mousePos!=null)
-            {
-                dragOffsetX = mousePos.x - this.x;
-                dragOffsetY = mousePos.y - this.y;
-            }
-            //TODO drag start here
-            if (!this._state!=STATE.dragging)
-            {
-                this._state=STATE.dragging;
-            }
-            if (!this._editable)
-            {
-                this.setEditable(true);
-            }
-            //console.log("OFFSET::::", this.offsetX, this.offsetY);
-            // }
-            var selectFariyEvent =new CustomEvent("SELECT_A_FARIY",{'detail':this});
-            this.dispatchEvent(selectFariyEvent,this);
-        };
-
-        editableImage.prototype.stopDrag = function(e)
-        {
-            e.preventDefault();
-            if(this._state==STATE.dragging)
-            {
-                this._state=STATE.none;
-            }
-        };
-
-        editableImage.prototype.update = function()
-        {
-            if(this._state==STATE.dragging&&mousePos!=null)
-            {
-                 this.x = mousePos.x //- dragOffsetX;
-                 this.y = mousePos.y //-dragOffsetY;
-            }
-        }*/
 
     </script>
 </head>
@@ -1119,13 +1018,13 @@
                 <input type="button" onclick="combinePic5()" value="奥可精灵"  style="height:80px"/>
                 <!--最终版返回按钮
                 <input type="button" onclick="backAndReset()" value="返回编辑"  style="height:80px"/>-->
-                <!--<input type="button" onclick="copyCanvas()" value="Copy"  style="height:80px"/>
-                <input type="button" onclick="uploadFile()" value="Upload"  style="height:80px"/>-->
-                <input type="button" onclick="copyAndUpload()" value="上传"  style="height:80px"/>
+              <input type="button" onclick="copyCanvas()" value="Copy"  style="height:80px"/>
+                  <!--<<input type="button" onclick="uploadFile()" value="Upload"  style="height:80px"/>-->
+                <input type="button" onclick="copyAndUpload()" value="  上传 "  style="height:80px"/>
                 <input type="file" name="fileToUpload" id="fileToUpload" onchange="fileSelected();" accept="image/*" capture="camera"/>
                 <label id="parm">12222</label>
                 <label id="orientation">no way</label>
-                <label for="fileToUpload">1.0Take or select photo(s)1.0.11</label>
+                <label for="fileToUpload">1.0Take or select photo(s)1.2.11</label>
         </div>
         <form method="post" accept-charset="utf-8" name="form1">
             <input name="hidden_data" id='hidden_data' type="hidden"/>
