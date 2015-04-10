@@ -336,8 +336,8 @@
                 {
                     scaleNum=Math.abs((mousePos.x- AnchorScale.x))>=Math.abs((mousePos.y- AnchorScale.y))?
                             (mousePos.y- AnchorScale.y)*btMul:(mousePos.x- AnchorScale.x)*btMul
-                    selectedTarget.setWidth(selectedTarget.getWidth()+scaleNum);
-                    selectedTarget.setHeight(selectedTarget.getHeight()+scaleNum);
+                    selectedTarget.setWidth(selectedTarget.getWidth()+(mousePos.x- AnchorScale.x)*btMul);
+                    selectedTarget.setHeight(selectedTarget.getHeight()+(mousePos.y- AnchorScale.y)*btMul);
                     AnchorScale.x = mousePos.x;
                     AnchorScale.y = mousePos.y;
                 }else if(selectedTarget.getState()==STATE.rotating)
