@@ -1,0 +1,1 @@
+declare function share(msg:string):void;
